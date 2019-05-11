@@ -3,10 +3,10 @@ const fs = require('fs')
 const crypto = require('crypto')
 const path = require('path')
 const sharp = require('sharp')
-const { execFileSync } = require('child_process')
 const Utils = require('./utils')
-const gifsicle = require('gifsicle')
 const ffmpeg = require('fluent-ffmpeg')
+
+var album = null
 
 class Scanner {
   constructor (path) {
@@ -16,6 +16,17 @@ class Scanner {
   async run () {
     let files = this.walk(this.path)
 
+    try {
+      album = await db.Album.findOrCreate({
+        where: {
+          name: 'test'
+        }
+      })
+    } catch (err) {
+      console.log(err)
+      throw err
+    }
+
     for (let file of files) {
       let mimetype = await Utils.getMIMEType(file)
       console.log(mimetype)
@@ -23,7 +34,7 @@ class Scanner {
       if (mimetype.match(/image\//)) {
         await this.processImage(file, mimetype)
       } else if (mimetype.match(/video\//)) {
-        await this.processVideo(file)
+        await this.processVideo(file, mimetype)
       } else {
         console.log(`Invalid file type: ${mimetype}`)
       }
@@ -31,7 +42,7 @@ class Scanner {
   }
 
   async processImage (file, mimetype) {
-    let photo = await db.media.findOne({
+    let photo = await db.Media.findOne({
       where: {
         path: file
       }
@@ -39,15 +50,15 @@ class Scanner {
 
     let imageInfo = await this.getImageInformation(file)
     if (!photo) {
-      photo = await db.media.create({ ...imageInfo, mimetype: mimetype })
+      photo = await db.Media.create({ ...imageInfo, mimetype: mimetype })
     }
 
-    let thumbnail = `./cache/thumbnails/${photo.id}${path.extname(file)}`
-    if (!fs.existsSync(thumbnail)) {
-      switch (photo.mimetype) {
-        case 'image/gif':
-          execFileSync(gifsicle, ['--scale', '0.5', '-o', thumbnail, file])
-          break
+    if (!(await photo.hasAlbum(album[0]))) {
+      try {
+        await photo.addAlbum(album[0])
+      } catch (err) {
+        console.log(err)
+        throw err
       }
     }
 
@@ -55,14 +66,14 @@ class Scanner {
   }
 
   async processVideo (file, mimetype) {
-    let video = await db.media.findOne({
+    let video = await db.Media.findOne({
       where: {
         path: file
       }
     })
 
     if (!video) {
-      video = await db.media.create({ ...await this.getVideoInformation(file), mimetype: mimetype })
+      video = await db.Media.create({ ...await this.getVideoInformation(file), mimetype: mimetype })
     }
 
     return video
