@@ -3,7 +3,6 @@ const fs = require('fs')
 const crypto = require('crypto')
 const path = require('path')
 const sharp = require('sharp')
-const Utils = require('./utils')
 const ffmpeg = require('fluent-ffmpeg')
 
 var album = null
@@ -28,7 +27,7 @@ class Scanner {
     }
 
     for (let file of files) {
-      let mimetype = await Utils.getMIMEType(file)
+      let mimetype = await db.Media.getMIMEType(file)
       console.log(mimetype)
 
       if (mimetype.match(/image\//)) {

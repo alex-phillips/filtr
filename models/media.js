@@ -7,8 +7,8 @@ const path = require('path')
 /**
  * required for processing GIF thumbnails
  */
-const { execFileSync } = require('child_process')
-const gifsicle = require('gifsicle')
+// const { execFileSync } = require('child_process')
+// const gifsicle = require('gifsicle')
 
 /**
  * for handling normal images
@@ -19,6 +19,12 @@ const sharp = require('sharp')
  * for creating thumbnail (screenshot) for videos
  */
 const ffmpeg = require('fluent-ffmpeg')
+
+/**
+ * for determining file mimetype
+ */
+const mmmagic = require('mmmagic')
+const Magic = require('mmmagic').Magic
 
 class Media extends Sequelize.Model {
   static init (sequelize, DataTypes) {
@@ -41,10 +47,7 @@ class Media extends Sequelize.Model {
   }
 
   async getThumbnail () {
-    let thumbnail = `${process.env.BASE_DIR}/cache/thumbnails/${this.id}${path.extname(this.path)}`
-    if (this.mimetype.match(/video\//)) {
-      thumbnail = `${process.env.BASE_DIR}/cache/thumbnails/${this.id}.png`
-    }
+    let thumbnail = `${process.env.BASE_DIR}/cache/thumbnails/${this.id}.png`
 
     if (fs.existsSync(thumbnail)) {
       return thumbnail
@@ -67,14 +70,27 @@ class Media extends Sequelize.Model {
     }
 
     switch (this.mimetype) {
-      case 'image/gif':
-        execFileSync(gifsicle, ['--scale', '0.5', '-o', thumbnail, this.path])
-        break
+      // case 'image/gif':
+      //   execFileSync(gifsicle, ['--scale', '0.5', '-o', thumbnail, this.path])
+      //   break
       default:
         await sharp(this.path).resize({ width: this.width / 2 }).toFile(thumbnail)
     }
 
     return thumbnail
+  }
+
+  static async getMIMEType (file) {
+    return new Promise((resolve, reject) => {
+      let detector = new Magic(mmmagic.MAGIC_MIME_TYPE)
+      detector.detectFile(file, (err, result) => {
+        if (err) {
+          return reject(err)
+        }
+
+        return resolve(result)
+      })
+    })
   }
 }
 
