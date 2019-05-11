@@ -60,7 +60,8 @@ class Media extends Sequelize.Model {
             count: 1,
             timemarks: [0],
             filename: path.basename(thumbnail),
-            folder: path.dirname(thumbnail)
+            folder: path.dirname(thumbnail),
+            size: `${this.width / 2}x${this.height / 2}`
           })
       })
     }
