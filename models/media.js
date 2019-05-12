@@ -46,6 +46,10 @@ class Media extends Sequelize.Model {
     })
   }
 
+  /**
+   * Retreive the thumbnail filepath and generate it if it doesn't
+   * already exist
+   */
   async getThumbnail () {
     let thumbnail = `${process.env.BASE_DIR}/cache/thumbnails/${this.id}.png`
 
@@ -80,6 +84,9 @@ class Media extends Sequelize.Model {
     return thumbnail
   }
 
+  /**
+   * Return the mimetype of the given file
+   */
   static async getMIMEType (file) {
     return new Promise((resolve, reject) => {
       let detector = new Magic(mmmagic.MAGIC_MIME_TYPE)
