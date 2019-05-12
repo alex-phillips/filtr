@@ -6,6 +6,7 @@ const debug = require('debug')('shoutout-board:server')
 const http = require('http')
 const createError = require('http-errors')
 const express = require('express')
+const cors = require('cors')
 
 const app = express()
 
@@ -13,6 +14,7 @@ app.use(express.json())
 app.use(express.urlencoded({
   extended: false
 }))
+app.use(cors())
 
 /**
  * Import and use routes
