@@ -22,7 +22,8 @@ app.use(cors())
 const routes = {
   'index': require('./routes/index'),
   'media': require('./routes/media'),
-  'albums': require('./routes/albums')
+  'albums': require('./routes/albums'),
+  'tags': require('./routes/tags')
 }
 
 for (let route in routes) {
