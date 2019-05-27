@@ -3,9 +3,9 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable(
-      'media_to_albums',
+      'media_to_tags',
       {
-        albumId: {
+        tagId: {
           type: Sequelize.INTEGER,
           primaryKey: true
         },
@@ -26,6 +26,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('media_to_albums')
+    return queryInterface.dropTable('media_to_tags')
   }
 }
