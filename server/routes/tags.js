@@ -34,6 +34,21 @@ router.get('/:ids', wrap(async (req, res, next) => {
   return res.json(tags)
 }))
 
+router.get('/:id/media', wrap(async (req, res, next) => {
+  let tag = await db.Tag.findOne({
+    where: {
+      id: req.params.id
+    }
+  })
+
+  let media = await tag.getMedia({
+    limit: 50,
+    offset: req.query.offset || 0
+  })
+
+  return res.json(media)
+}))
+
 router.post('/', wrap(async (req, res, next) => {
   let tag = await db.Tag.create({
     name: req.body.name
