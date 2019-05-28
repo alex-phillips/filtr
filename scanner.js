@@ -5,8 +5,6 @@ const path = require('path')
 const sharp = require('sharp')
 const ffmpeg = require('fluent-ffmpeg')
 
-var album = null
-
 class Scanner {
   constructor (path) {
     this.path = path
@@ -15,27 +13,16 @@ class Scanner {
   async run () {
     let files = this.walk(this.path)
 
-    try {
-      album = await db.Album.findOrCreate({
-        where: {
-          name: 'test'
-        }
-      })
-    } catch (err) {
-      console.log(err)
-      throw err
-    }
-
     for (let file of files) {
       let mimetype = await db.Media.getMIMEType(file)
-      console.log(mimetype)
 
-      if (mimetype.match(/image\//)) {
+      if (mimetype.match(/image\/(?:png|jpg|jpeg|gif)/)) {
         await this.processImage(file, mimetype)
       } else if (mimetype.match(/video\//)) {
         await this.processVideo(file, mimetype)
       } else {
         console.log(`Invalid file type: ${mimetype}`)
+        continue
       }
     }
   }
@@ -50,15 +37,6 @@ class Scanner {
     let imageInfo = await this.getImageInformation(file)
     if (!photo) {
       photo = await db.Media.create({ ...imageInfo, mimetype: mimetype })
-    }
-
-    if (!(await photo.hasAlbum(album[0]))) {
-      try {
-        await photo.addAlbum(album[0])
-      } catch (err) {
-        console.log(err)
-        throw err
-      }
     }
 
     return photo
