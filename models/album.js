@@ -13,8 +13,21 @@ class Album extends Sequelize.Model {
 
   static associate (models) {
     this.belongsToMany(models.Media, {
-      through: 'media_to_albums'
+      through: 'media_to_albums',
+      as: 'media'
     })
+
+    this.belongsTo(models.Album, {
+      as: 'Parent',
+      foreignKey: 'parentId'
+    })
+  }
+
+  toJSON () {
+    return {
+      ...this.get(),
+      url: `/albums/${this.id}`
+    }
   }
 }
 
