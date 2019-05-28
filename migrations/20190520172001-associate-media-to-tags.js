@@ -7,11 +7,13 @@ module.exports = {
       {
         tagId: {
           type: Sequelize.INTEGER,
-          primaryKey: true
+          primaryKey: true,
+          unique: 'mediaTag'
         },
         mediaId: {
           type: Sequelize.INTEGER,
-          primaryKey: true
+          primaryKey: true,
+          unique: 'mediaTag'
         },
         createdAt: {
           allowNull: false,
