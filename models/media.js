@@ -42,7 +42,15 @@ class Media extends Sequelize.Model {
 
   static associate (models) {
     this.belongsToMany(models.Album, {
-      through: 'media_to_albums'
+      through: 'media_to_albums',
+      foreignKey: 'mediaId',
+      as: 'albums'
+    })
+
+    this.belongsToMany(models.Tag, {
+      through: 'media_to_tags',
+      foreignKey: 'mediaId',
+      as: 'tags'
     })
   }
 
@@ -57,6 +65,16 @@ class Media extends Sequelize.Model {
       return thumbnail
     }
 
+    let w = this.width
+    let h = this.height
+    if (this.width >= this.height) {
+      w = 150
+      h = Math.round(h * 150 / this.width)
+    } else {
+      h = 150
+      w = Math.round(w * 150 / this.height)
+    }
+
     if (this.mimetype.match(/video\//)) {
       return new Promise((resolve, reject) => {
         ffmpeg(this.path)
@@ -68,7 +86,7 @@ class Media extends Sequelize.Model {
             timemarks: [0],
             filename: path.basename(thumbnail),
             folder: path.dirname(thumbnail),
-            size: `${this.width / 2}x${this.height / 2}`
+            size: `${w}x${h}`
           })
       })
     }
@@ -78,10 +96,17 @@ class Media extends Sequelize.Model {
       //   execFileSync(gifsicle, ['--scale', '0.5', '-o', thumbnail, this.path])
       //   break
       default:
-        await sharp(this.path).resize({ width: this.width / 2 }).toFile(thumbnail)
+        await sharp(this.path).resize({ width: w }).toFile(thumbnail)
     }
 
     return thumbnail
+  }
+
+  toJSON () {
+    return {
+      ...this.get(),
+      url: `/media/${this.id}`
+    }
   }
 
   /**
