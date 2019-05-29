@@ -1,3 +1,4 @@
+require('./bootstrap')
 const db = require('./models/index')
 const fs = require('fs')
 const crypto = require('crypto')
@@ -120,4 +121,5 @@ class Scanner {
   }
 }
 
-module.exports = Scanner
+let scanner = new scanner(process.argv[2])
+scanner.run()
