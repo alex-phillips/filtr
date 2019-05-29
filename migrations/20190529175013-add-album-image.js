@@ -4,11 +4,11 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn(
       'albums',
-      'parentId',
+      'previewId',
       {
         type: Sequelize.INTEGER,
         references: {
-          model: 'albums',
+          model: 'media',
           key: 'id'
         },
         onDelete: 'SET NULL'
@@ -17,6 +17,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.removeColumn('albums', 'parentId')
+    return queryInterface.removeColumn('albums', 'previewId')
   }
 }
