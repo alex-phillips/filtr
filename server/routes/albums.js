@@ -7,9 +7,13 @@ const wrap = require('../middleware/routeWrapper')
  * Get all albums
  */
 router.get('/', wrap(async (req, res, next) => {
+  let filter = null
+  try {
+    filter = JSON.parse(req.query.filter)
+  } catch (e) {}
+
   let albums = await db.Album.findAll({
-    limit: 50,
-    offset: req.query.offset || 0,
+    where: filter,
     include: [
       {
         model: db.Media,
@@ -28,6 +32,10 @@ router.get('/:id', wrap(async (req, res, next) => {
   let album = await db.Album.findOne({
     where: {
       id: req.params.id
+    },
+    include: {
+      model: db.Album,
+      as: 'children'
     }
   })
 
@@ -61,6 +69,10 @@ router.post('/', wrap(async (req, res, next) => {
     description: req.body.description
   })
 
+  if (req.body.parentId) {
+    album.setParent(req.body.parentId)
+  }
+
   return res.json(album)
 }))
 
@@ -85,10 +97,19 @@ router.put('/:id/media/:media_ids', wrap(async (req, res, next) => {
   let album = await db.Album.findOne({
     where: {
       id: req.params.id
-    }
+    },
+    include: [
+      {
+        model: db.Media,
+        as: 'media'
+      }
+    ]
   })
 
-  album.addMedia(req.params.media_ids.split(','))
+  let ids = new Set([...album.media.map(m => m.id), ...req.params.media_ids.split(',').map(id => parseInt(id))])
+  await album.setMedia([...ids])
+
+  await album.setPreview(ids.values().next().value)
 
   album = await db.Album.findOne({
     where: {

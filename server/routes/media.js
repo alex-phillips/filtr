@@ -7,7 +7,12 @@ router.get('/', wrap(async (req, res, next) => {
   let limit = 50
   return res.json(await db.Media.findAll({
     limit: limit,
-    offset: req.query.offset || 0
+    offset: req.query.offset || 0,
+    include: {
+      model: db.Tag,
+      as: 'tags',
+      attributes: ['id', 'name']
+    }
   }))
 }))
 
