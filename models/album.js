@@ -7,7 +7,9 @@ class Album extends Sequelize.Model {
     return super.init({
       name: DataTypes.STRING,
       description: DataTypes.STRING,
-      public: DataTypes.BOOLEAN
+      public: DataTypes.BOOLEAN,
+      parentId: DataTypes.INTEGER,
+      previewId: DataTypes.INTEGER
     }, { sequelize })
   }
 
@@ -17,8 +19,18 @@ class Album extends Sequelize.Model {
       as: 'media'
     })
 
+    this.belongsTo(models.Media, {
+      as: 'preview',
+      foreignKey: 'previewId'
+    })
+
+    this.hasMany(models.Album, {
+      as: 'children',
+      foreignKey: 'parentId'
+    })
+
     this.belongsTo(models.Album, {
-      as: 'Parent',
+      as: 'parent',
       foreignKey: 'parentId'
     })
   }
