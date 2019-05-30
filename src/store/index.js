@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 import tags from './tags'
 import albums from './albums'
+import folders from './folders'
 
 Vue.use(Vuex)
 
@@ -15,7 +16,8 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       tags,
-      albums
+      albums,
+      folders
     },
 
     // enable strict mode (adds overhead!)

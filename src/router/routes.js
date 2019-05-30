@@ -31,6 +31,13 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Tag.vue') }
     ]
+  },
+  {
+    path: '/folders/:id',
+    component: () => import('layouts/FoldersLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/Folder.vue') }
+    ]
   }
 ]
 
