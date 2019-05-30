@@ -7,7 +7,7 @@ export function rootAlbums (state) {
 }
 
 export function tree (state) {
-  return state.albumTree
+  return state.tree
 }
 
 export function mappedAlbums (state) {

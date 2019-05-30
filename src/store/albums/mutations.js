@@ -37,5 +37,5 @@ export function setAlbums (state, albums) {
   }
 
   Vue.set(state, 'mappedAlbums', mappedArr)
-  Vue.set(state, 'albumTree', tree)
+  Vue.set(state, 'tree', tree)
 }
