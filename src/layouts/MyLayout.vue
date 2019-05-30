@@ -2,17 +2,8 @@
   <q-layout view="hHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          aria-label="Menu"
-        >
-          <q-icon name="menu" />
-        </q-btn>
-
         <q-toolbar-title>
-          Quasar App
+          Filtr
         </q-toolbar-title>
 
         <search></search>

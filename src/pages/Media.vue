@@ -15,7 +15,7 @@
         </q-btn>
 
         <q-toolbar-title>
-          Quasar App
+          Filtr
         </q-toolbar-title>
 
         <q-btn
