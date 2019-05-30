@@ -5,6 +5,20 @@
         <q-icon name="close"></q-icon>DESELECT ALL
       </q-btn>
 
+      <q-breadcrumbs
+        v-if="tag.id !== undefined"
+      >
+        <q-breadcrumbs-el
+          icon="home"
+          to="/"
+        />
+        <q-breadcrumbs-el
+          icon="local_offer"
+          :label="tag.name"
+          to="/albums"
+        />
+      </q-breadcrumbs>
+
       <q-toolbar-title></q-toolbar-title>
 
       <q-btn flat round dense icon="more_vert" v-if="selectMode">
@@ -48,6 +62,7 @@ export default {
 
   data () {
     return {
+      tag: {},
       dataUrl: null,
       media: [],
       selectMode: false
@@ -56,6 +71,7 @@ export default {
 
   created () {
     this.dataUrl = `${this.$config.server.base_url}/tags/${this.$route.params.id}`
+    this.tag = this.$store.getters['tags/getTagByID'](parseInt(this.$route.params.id))
   },
 
   methods: {
