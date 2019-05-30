@@ -14,7 +14,7 @@ export function setFolders (state, folders) {
   // First map the nodes of the array to an object -> create a hash table.
   for (var i = 0, len = folders.length; i < len; i++) {
     arrElem = folders[i]
-    arrElem.label = arrElem.name
+    arrElem.label = `/${arrElem.name}`
     mappedArr[arrElem.id] = arrElem
     mappedArr[arrElem.id]['children'] = []
   }
