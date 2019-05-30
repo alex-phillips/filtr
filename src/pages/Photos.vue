@@ -92,8 +92,10 @@ export default {
 
     async addToAlbum (album) {
       let ids = [...this.selectedMedia].map(m => m.id)
-      await this.$axios.put(`${this.$config.server.base_url}/albums/${album.id}/media/${ids.join(',')}`)
-      this.$store.dispatch('albums/fetchAlbums')
+      this.$store.dispatch('albums/addToAlbum', {
+        album: album,
+        ids: ids
+      })
     }
   }
 }
