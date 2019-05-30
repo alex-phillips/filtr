@@ -11,11 +11,10 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
-        uniqie: 'childFolder'
+        allowNull: false
       },
       parentId: {
         type: Sequelize.INTEGER,
-        uniqie: 'childFolder',
         references: {
           model: 'folders',
           key: 'id'
