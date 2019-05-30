@@ -1,3 +1,5 @@
+process.chdir(__dirname)
+
 require('./bootstrap')
 const db = require('./models/index')
 const fs = require('fs')
