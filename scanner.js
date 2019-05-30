@@ -21,13 +21,20 @@ class Scanner {
     for (let file of files) {
       let mimetype = await db.Media.getMIMEType(file)
 
+      console.log(`SCANNING file ${file} with MIMETYPE ${mimetype}`)
+
       let media = null
-      if (mimetype.match(/image\/(?:png|jpg|jpeg|gif)/)) {
-        media = await this.processImage(file, mimetype)
-      } else if (mimetype.match(/video\//)) {
-        media = await this.processVideo(file, mimetype)
-      } else {
-        console.log(`Invalid file type: ${mimetype}`)
+      try {
+        if (mimetype.match(/image\/(?:png|jpg|jpeg|gif)/)) {
+          media = await this.processImage(file, mimetype)
+        } else if (mimetype.match(/video\//)) {
+          media = await this.processVideo(file, mimetype)
+        } else {
+          console.log(`Invalid file type: ${mimetype}`)
+          continue
+        }
+      } catch (err) {
+        console.log(`FAILED to scan file ${file}: `, err.message)
         continue
       }
 
@@ -108,12 +115,7 @@ class Scanner {
   async getImageInformation (filepath) {
     let stat = fs.statSync(filepath)
 
-    try {
-      var imageInfo = await sharp(filepath).metadata()
-    } catch (e) {
-      console.log(e)
-      process.exit()
-    }
+    var imageInfo = await sharp(filepath).metadata()
 
     return {
       path: filepath,
