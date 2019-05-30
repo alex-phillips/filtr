@@ -1,5 +1,5 @@
 module.exports = {
   server: {
-    base_url: 'http://YOUR_SERVER_IP:3000' # HTTP path to the server API
+    base_url: '' # HTTP path to the server API
   }
 }
