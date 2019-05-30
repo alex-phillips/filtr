@@ -12,7 +12,6 @@
 
     <q-drawer
       v-model="drawerOpen"
-      :width="250"
       :breakpoint="700"
       show-if-above
       elevated
@@ -25,7 +24,7 @@
             default-expand-all
             :selected.sync="selectedFolderId"
             node-key="id"
-            @update:selected="$router.push(`/folders/${selectedFolderId}`)"
+            @update:selected="goToFolder"
           />
         </div>
       </q-scroll-area>
@@ -60,6 +59,18 @@ export default {
   computed: {
     folderTree () {
       return this.$store.getters['folders/tree']
+    }
+  },
+
+  methods: {
+    goToFolder () {
+      // Apparently if you click on the node in the tree that is currently
+      // selected, then the selected value becomes null...
+      if (!this.selectedFolderId) {
+        return
+      }
+
+      this.$router.push(`/folders/${this.selectedFolderId}`)
     }
   }
 }
