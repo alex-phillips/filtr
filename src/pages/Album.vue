@@ -6,51 +6,6 @@
     <confirm ref="confirmRemoveImages" :message="'Remove images from album?'" @confirm="removeFromAlbum"></confirm>
     <confirm ref="confirmDeleteAlbum" :message="'Really delete album?'" @confirm="deleteAlbum"></confirm>
 
-    <q-toolbar class="bg-grey-3">
-      <q-breadcrumbs>
-        <q-breadcrumbs-el
-          icon="home"
-          to="/albums"
-        />
-        <q-breadcrumbs-el
-          v-for="item in lineage"
-          :key="item.id"
-          :label="item.name"
-          :to="item.url"
-        />
-      </q-breadcrumbs>
-
-      <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
-        <q-icon name="close"></q-icon>DESELECT ALL
-      </q-btn>
-
-      <q-toolbar-title></q-toolbar-title>
-
-      <q-btn flat round dense @click="$refs.albumEditor.open()">
-        <q-icon name="add_to_photos"></q-icon>
-      </q-btn>
-
-      <q-btn v-if="album" flat round dense @click="$refs.confirmDeleteAlbum.open()">
-        <q-icon name="delete"></q-icon>
-      </q-btn>
-
-      <q-btn flat round dense icon="more_vert" v-if="selectMode">
-        <q-menu>
-          <q-list style="min-width: 150px">
-            <q-item clickable v-close-popup>
-              <q-item-section @click="$refs.mediaEditor.open()">Edit</q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup>
-              <q-item-section @click="$refs.albumSelector.open()">Add to album...</q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup v-if="!!album">
-              <q-item-section @click="$refs.confirmRemoveImages.open()">Remove from album</q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-btn>
-    </q-toolbar>
-
     <grid-view
       v-if="album.id !== undefined"
       ref="gridView"
@@ -59,6 +14,53 @@
       @loadMore="getData"
       @selected="selected"
     ></grid-view>
+
+    <q-page-sticky expand position="top">
+      <q-toolbar class="bg-grey-3">
+        <q-breadcrumbs>
+          <q-breadcrumbs-el
+            icon="home"
+            to="/albums"
+          />
+          <q-breadcrumbs-el
+            v-for="item in lineage"
+            :key="item.id"
+            :label="item.name"
+            :to="item.url"
+          />
+        </q-breadcrumbs>
+
+        <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
+          <q-icon name="close"></q-icon>DESELECT ALL
+        </q-btn>
+
+        <q-toolbar-title></q-toolbar-title>
+
+        <q-btn flat round dense @click="$refs.albumEditor.open()">
+          <q-icon name="add_to_photos"></q-icon>
+        </q-btn>
+
+        <q-btn v-if="album" flat round dense @click="$refs.confirmDeleteAlbum.open()">
+          <q-icon name="delete"></q-icon>
+        </q-btn>
+
+        <q-btn flat round dense icon="more_vert" v-if="selectMode">
+          <q-menu>
+            <q-list style="min-width: 150px">
+              <q-item clickable v-close-popup>
+                <q-item-section @click="$refs.mediaEditor.open()">Edit</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup>
+                <q-item-section @click="$refs.albumSelector.open()">Add to album...</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup v-if="!!album">
+                <q-item-section @click="$refs.confirmRemoveImages.open()">Remove from album</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+      </q-toolbar>
+    </q-page-sticky>
   </q-page>
 </template>
 
