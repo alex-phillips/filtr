@@ -58,7 +58,8 @@ module.exports = function (ctx) {
         'QBreadcrumbs',
         'QBreadcrumbsEl',
         'QBtnDropdown',
-        'QTree'
+        'QTree',
+        'QScrollArea'
       ],
 
       directives: [
