@@ -17,9 +17,12 @@ export function mappedAlbums (state) {
 export function getAlbumLineage (state) {
   return albumId => {
     let lineage = []
-    lineage.push(state.mappedAlbums[albumId])
-    while (lineage[lineage.length - 1].parentId !== null) {
-      lineage.push(state.mappedAlbums[lineage[lineage.length - 1].parentId])
+
+    if (state.mappedAlbums[albumId]) {
+      lineage.push(state.mappedAlbums[albumId])
+      while (lineage[lineage.length - 1].parentId !== null) {
+        lineage.push(state.mappedAlbums[lineage[lineage.length - 1].parentId])
+      }
     }
 
     return lineage
