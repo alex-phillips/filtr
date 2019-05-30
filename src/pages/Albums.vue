@@ -82,7 +82,7 @@ export default {
 
   computed: {
     albums () {
-      return this.$store.getters['entities/rootAlbums']
+      return this.$store.getters['albums/rootAlbums']
     }
   },
 

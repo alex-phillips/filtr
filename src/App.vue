@@ -10,7 +10,7 @@ export default {
 
   created () {
     this.$store.dispatch('tags/getTags')
-    this.$store.dispatch('entities/fetchAlbums')
+    this.$store.dispatch('albums/fetchAlbums')
   },
 
   ready () {

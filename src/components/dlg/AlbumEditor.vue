@@ -68,7 +68,7 @@ export default {
 
   computed: {
     albumTree () {
-      return this.$store.getters['entities/albumTree']
+      return this.$store.getters['albums/tree']
     }
   },
 
@@ -118,7 +118,7 @@ export default {
         this.close(response.data)
       }
 
-      this.$store.dispatch('entities/fetchAlbums')
+      this.$store.dispatch('albums/fetchAlbums')
     }
   }
 }

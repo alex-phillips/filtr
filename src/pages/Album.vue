@@ -97,7 +97,7 @@ export default {
 
   created () {
     this.dataUrl = `${this.$config.server.base_url}/albums/${this.$route.params.id}`
-    this.lineage = this.$store.getters['entities/getAlbumLineage'](this.$route.params.id).reverse()
+    this.lineage = this.$store.getters['albums/getAlbumLineage'](this.$route.params.id).reverse()
   },
 
   async beforeMount () {
@@ -145,8 +145,8 @@ export default {
 
     async deleteAlbum () {
       await this.$axios.delete(this.dataUrl)
-      this.$store.commit('entities/deleteAlbum', this.album)
-      this.$store.dispatch('entities/fetchAlbums')
+      this.$store.commit('albums/deleteAlbum', this.album)
+      this.$store.dispatch('albums/fetchAlbums')
       this.$router.go(-1)
     },
 

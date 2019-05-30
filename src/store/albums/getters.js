@@ -1,4 +1,4 @@
-export function albums (state) {
+export function allAlbums (state) {
   return state.albums
 }
 
@@ -6,7 +6,7 @@ export function rootAlbums (state) {
   return state.albums.filter(a => a.parentId === null)
 }
 
-export function albumTree (state) {
+export function tree (state) {
   return state.albumTree
 }
 

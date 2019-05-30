@@ -52,7 +52,7 @@ export default {
 
   computed: {
     albumTree () {
-      return this.$store.getters['entities/albumTree']
+      return this.$store.getters['albums/tree']
     }
   },
 
