@@ -91,6 +91,7 @@ export default {
 
       this.selectMode = false
       this.selectedMedia.clear()
+      this.$emit('selected', this.selectedMedia)
     },
 
     loadMore (index, done) {
