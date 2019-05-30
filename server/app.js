@@ -24,7 +24,8 @@ const routes = {
   '': require('./routes/index'),
   'media': require('./routes/media'),
   'albums': require('./routes/albums'),
-  'tags': require('./routes/tags')
+  'tags': require('./routes/tags'),
+  'folders': require('./routes/folders')
 }
 
 app.use(express.static(path.join(__dirname, '../dist/spa/')))

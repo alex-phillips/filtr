@@ -26,7 +26,9 @@ router.get('/:id/media', wrap(async (req, res, next) => {
   let media = await db.Media.findAll({
     where: {
       folderId: req.params.id
-    }
+    },
+    limit: 50,
+    offset: req.query.offset || 0
   })
 
   return res.json(media)
