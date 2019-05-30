@@ -117,7 +117,7 @@ export default {
           selection = this.media.slice(min, max)
         }
       } else {
-        selection = [this.media.find(img => img.id === media.id)]
+        selection = [media]
         this.selectedMediaIndex = index
       }
 
