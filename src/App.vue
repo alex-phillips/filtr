@@ -11,6 +11,7 @@ export default {
   created () {
     this.$store.dispatch('tags/getTags')
     this.$store.dispatch('albums/fetchAlbums')
+    this.$store.dispatch('folders/fetchFolders')
   },
 
   ready () {
