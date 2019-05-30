@@ -5,21 +5,7 @@
     <media-editor ref="mediaEditor" :media="selectedMedia"></media-editor>
 
     <q-toolbar class="bg-grey-3">
-      <q-btn-dropdown stretch flat label="Albums">
-        <q-list>
-          <q-item clickable v-close-popup @click="$router.push('/')">
-            <q-item-section>
-              <q-item-label>Media</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable v-close-popup>
-            <q-item-section>
-              <q-item-label>Albums</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-btn-dropdown>
+      <top-level-nav></top-level-nav>
 
       <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
         <q-icon name="close"></q-icon>DESELECT ALL
@@ -61,6 +47,7 @@ import GridView from '../components/GridView'
 import AlbumEditor from '../components/dlg/AlbumEditor'
 import AlbumSelector from '../components/dlg/AlbumSelector'
 import MediaEditor from '../components/dlg/MediaEditor'
+import TopLevelNav from '../components/TopLevelNav'
 
 export default {
   name: 'PageIndex',
@@ -69,8 +56,8 @@ export default {
     GridView,
     AlbumEditor,
     AlbumSelector,
-    // Confirm,
-    MediaEditor
+    MediaEditor,
+    TopLevelNav
   },
 
   data () {

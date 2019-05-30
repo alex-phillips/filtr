@@ -4,21 +4,7 @@
     <media-editor ref="mediaEditor" :media="selectedMedia"></media-editor>
 
     <q-toolbar class="bg-grey-3">
-      <q-btn-dropdown stretch flat label="Media">
-        <q-list>
-          <q-item clickable v-close-popup>
-            <q-item-section>
-              <q-item-label>Media</q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable v-close-popup @click="$router.push('/albums')">
-            <q-item-section>
-              <q-item-label>Albums</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-btn-dropdown>
+      <top-level-nav></top-level-nav>
 
       <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
         <q-icon name="close"></q-icon>DESELECT ALL
@@ -56,6 +42,7 @@
 import GridView from '../components/GridView'
 import AlbumSelector from '../components/dlg/AlbumSelector'
 import MediaEditor from '../components/dlg/MediaEditor'
+import TopLevelNav from '../components/TopLevelNav'
 
 export default {
   name: 'PageIndex',
@@ -63,7 +50,8 @@ export default {
   components: {
     GridView,
     AlbumSelector,
-    MediaEditor
+    MediaEditor,
+    TopLevelNav
   },
 
   data () {
@@ -105,6 +93,7 @@ export default {
     async addToAlbum (album) {
       let ids = [...this.selectedMedia].map(m => m.id)
       await this.$axios.put(`${this.$config.server.base_url}/albums/${album.id}/media/${ids.join(',')}`)
+      this.$store.dispatch('albums/fetchAlbums')
     }
   }
 }

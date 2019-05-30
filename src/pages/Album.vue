@@ -90,14 +90,18 @@ export default {
       albums: [],
       media: [],
       selectedMedia: [],
-      selectMode: false,
-      lineage: []
+      selectMode: false
+    }
+  },
+
+  computed: {
+    lineage () {
+      return this.$store.getters['albums/getAlbumLineage'](this.$route.params.id)
     }
   },
 
   created () {
     this.dataUrl = `${this.$config.server.base_url}/albums/${this.$route.params.id}`
-    this.lineage = this.$store.getters['albums/getAlbumLineage'](this.$route.params.id).reverse()
   },
 
   async beforeMount () {
@@ -140,7 +144,10 @@ export default {
 
     async addToAlbum (album) {
       let ids = [...this.selectedMedia].map(m => m.id)
-      await this.$axios.put(`${this.$config.server.base_url}/albums/${album.id}/media/${ids.join(',')}`)
+      this.$store.dispatch('albums/addToAlbum', {
+        album: album,
+        ids: ids
+      })
     },
 
     async deleteAlbum () {
