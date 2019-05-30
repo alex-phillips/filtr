@@ -101,7 +101,7 @@ export default {
 
     selectMedia (index, event) {
       let media = this.media[index]
-      if (!(event.ctrlKey || event.shiftKey) && !this.selectMode) {
+      if (!(event.ctrlKey || event.shiftKey || event.metaKey) && !this.selectMode) {
         return this.$router.push(`/media/${media.id}`)
       }
 
