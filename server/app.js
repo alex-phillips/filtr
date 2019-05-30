@@ -7,6 +7,7 @@ const http = require('http')
 const createError = require('http-errors')
 const express = require('express')
 const cors = require('cors')
+const path = require('path')
 
 const app = express()
 
@@ -20,11 +21,13 @@ app.use(cors())
  * Import and use routes
  */
 const routes = {
-  'index': require('./routes/index'),
+  '': require('./routes/index'),
   'media': require('./routes/media'),
   'albums': require('./routes/albums'),
   'tags': require('./routes/tags')
 }
+
+app.use(express.static(path.join(__dirname, '../dist/spa/')))
 
 for (let route in routes) {
   app.use(`/${route}`, routes[route])
