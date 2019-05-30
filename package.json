@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0",
-    "migrate": "npx sequelize-cli db:migrate",
+    "migrate": "./node_modules/sequelize-cli/lib/sequelize db:migrate",
     "scan": "node scanner"
   },
   "dependencies": {
