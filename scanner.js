@@ -5,6 +5,7 @@ const crypto = require('crypto')
 const path = require('path')
 const sharp = require('sharp')
 const ffmpeg = require('fluent-ffmpeg')
+const { Op } = require('sequelize')
 
 class Scanner {
   constructor (path) {
@@ -14,18 +15,44 @@ class Scanner {
   async run () {
     let files = this.walk(this.path)
 
+    let folderIds = new Set()
     for (let file of files) {
       let mimetype = await db.Media.getMIMEType(file)
 
+      let media = null
       if (mimetype.match(/image\/(?:png|jpg|jpeg|gif)/)) {
-        await this.processImage(file, mimetype)
+        media = await this.processImage(file, mimetype)
       } else if (mimetype.match(/video\//)) {
-        await this.processVideo(file, mimetype)
+        media = await this.processVideo(file, mimetype)
       } else {
         console.log(`Invalid file type: ${mimetype}`)
         continue
       }
+
+      let filepath = path.dirname(media.path).split('/').filter(p => p !== '')
+      let parent = null
+      for (let dir of filepath) {
+        let parentId = parent !== null ? parent.id : null
+        parent = (await db.Folder.findOrCreate({
+          where: {
+            name: dir,
+            parentId: parentId
+          }
+        }))[0]
+
+        folderIds.add(parent.id)
+      }
+
+      media.setFolder(parent)
     }
+
+    db.Folder.destroy({
+      where: {
+        id: {
+          [Op.notIn]: [...folderIds]
+        }
+      }
+    })
   }
 
   async processImage (file, mimetype) {
