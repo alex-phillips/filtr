@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <q-toolbar class="bg-grey-3">
-      <q-btn flat v-if="selectMode" @click="resetSelection">
+      <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
         <q-icon name="close"></q-icon>DESELECT ALL
       </q-btn>
 
@@ -59,14 +59,9 @@ export default {
   },
 
   methods: {
-    resetSelection () {
-      this.$refs.gridView.reset()
-      this.selectMode = false
-    },
-
     selected (selectedMedia) {
       this.selectedMedia = [...selectedMedia]
-      this.selectMode = true
+      this.selectMode = selectedMedia.size !== 0
     },
 
     async getData (index, done) {

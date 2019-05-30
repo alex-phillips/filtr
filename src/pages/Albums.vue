@@ -21,7 +21,7 @@
         </q-list>
       </q-btn-dropdown>
 
-      <q-btn flat v-if="selectMode" @click="resetSelection">
+      <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
         <q-icon name="close"></q-icon>DESELECT ALL
       </q-btn>
 
@@ -87,14 +87,9 @@ export default {
   },
 
   methods: {
-    resetSelection () {
-      this.$refs.gridView.reset()
-      this.selectMode = false
-    },
-
     selected (selectedMedia) {
       this.selectedMedia = [...selectedMedia]
-      this.selectMode = true
+      this.selectMode = selectedMedia.size !== 0
     },
 
     async addToAlbum (album) {
