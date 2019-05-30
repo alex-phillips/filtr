@@ -121,5 +121,5 @@ class Scanner {
   }
 }
 
-let scanner = new scanner(process.argv[2])
+let scanner = new Scanner(process.argv[2])
 scanner.run()
