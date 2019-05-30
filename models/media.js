@@ -52,6 +52,11 @@ class Media extends Sequelize.Model {
       foreignKey: 'mediaId',
       as: 'tags'
     })
+
+    this.belongsTo(models.Folder, {
+      foreignKey: 'folderId',
+      as: 'folder'
+    })
   }
 
   /**
