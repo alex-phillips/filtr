@@ -19,6 +19,7 @@
           :to="item.url"
         />
       </q-breadcrumbs>
+
       <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
         <q-icon name="close"></q-icon>DESELECT ALL
       </q-btn>
