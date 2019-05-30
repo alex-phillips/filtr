@@ -85,7 +85,6 @@ export default {
           id: album
         }
       }
-      console.log(album)
       this.$emit('selected', album)
       this.close()
     }
