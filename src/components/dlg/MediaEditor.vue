@@ -21,11 +21,12 @@
 
         <q-select
           ref="tagSelect"
-          label="Mode: 'add-unique'"
+          label="Tags"
           v-model="selectedTags"
           use-input
           use-chips
           multiple
+          clearable
           input-debounce="0"
           new-value-mode="add-unique"
           @new-value="newTag"
@@ -73,8 +74,8 @@ export default {
 
     close (updatedMedia) {
       this.reset()
-      this.$refs.dialog.hide()
       this.$emit('close', updatedMedia)
+      this.$refs.dialog.hide()
     },
 
     reset () {
