@@ -21,6 +21,7 @@
     "express": "^4.17.0",
     "fluent-ffmpeg": "^2.1.2",
     "jsonwebtoken": "^8.5.1",
+    "justified-layout": "^2.1.2",
     "mmmagic": "^0.5.3",
     "quasar": "^1.0.0-beta.24",
     "sequelize": "^5.8.6",

@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-top: 50px;">
+  <div class="grid-container" ref="gridContainer">
     <q-infinite-scroll @load="loadMore">
       <div class="albums" v-if="albums.length > 0">
         <q-item-label header>Albums</q-item-label>
@@ -22,18 +22,23 @@
         </div>
       </div>
 
-      <div class="media" v-if="media.length > 0">
-        <q-item-label header v-if="albums.length > 0">Media</q-item-label>
-        <div class="q-pa-md q-gutter-sm justify-start row">
+      <div class="media" v-if="layoutBoxes.length > 0">
+        <q-item-label header>Media</q-item-label>
+        <div class="justified-layout-container">
           <q-img
-            v-for="(image, index) in media"
-            v-bind:key="image.id"
-            :class="{ selected: image.selected }"
+            v-for="(box, index) in layoutBoxes"
+            v-bind:key="media[index].id"
+            :class="{ selected: media[index].selected }"
             @click="selectMedia(index, $event)"
             class="image-preview"
-            v-lazy:background="`${$config.server.base_url}/media/${image.id}/thumbnail/`"
+            v-lazy:background="`${$config.server.base_url}/media/${media[index].id}/thumbnail/`"
             spinner-color="primary"
-            :style="{ width: `${image.width * 140 / image.height}px` }"
+            :style="{
+              width: `${layoutBoxes[index].width}px`,
+              height: `${layoutBoxes[index].height}px`,
+              top: `${layoutBoxes[index].top}px`,
+              left: `${layoutBoxes[index].left}px`,
+            }"
           >
             <template v-slot:error>
               <div class="absolute-full flex flex-center bg-negative text-white">
@@ -43,11 +48,17 @@
           </q-img>
         </div>
       </div>
+
+      <div v-if="layoutBoxes.length === 0 && albums.length === 0" class="absolute-full flex flex-center">
+        No media
+      </div>
     </q-infinite-scroll>
   </div>
 </template>
 
 <script>
+import JustifiedLayout from 'justified-layout'
+
 export default {
   name: 'PageIndex',
 
@@ -80,11 +91,40 @@ export default {
       selectedAlbumIndex: null,
       selectMode: false,
       selectedMedia: new Set(),
-      selectedAlbums: new Set()
+      selectedAlbums: new Set(),
+      containerWidth: 0
+    }
+  },
+
+  mounted () {
+    window.addEventListener('resize', this.getContainerWidth)
+    this.getContainerWidth()
+  },
+
+  beforeDestroy () {
+    window.removeEventListener('resize', this.getContainerWidth)
+  },
+
+  computed: {
+    layoutBoxes () {
+      if (!this.containerWidth) {
+        return []
+      }
+
+      let config = JustifiedLayout(this.media, {
+        containerWidth: this.containerWidth
+      })
+      return config.boxes
     }
   },
 
   methods: {
+    getContainerWidth () {
+      // need to subtract some pixels since the scroll bar isn't loaded in
+      // until we actually start showing some images...
+      this.containerWidth = this.$refs.gridContainer.clientWidth - 5
+    },
+
     reset () {
       for (let asset of this.media) {
         asset.selected = false
@@ -168,6 +208,16 @@ export default {
 </script>
 
 <style>
+.grid-container {
+  padding-top: 50px;
+  width: 100%
+}
+
+.justified-layout-container {
+  position: relative;
+  width: 100%;
+}
+
 .album-preview {
   border: 1px solid black;
   width: 140px;
@@ -177,8 +227,8 @@ export default {
 }
 
 .image-preview {
+  position: absolute;
   border: 1px solid black;
-  height: 140px;
   background-size: cover !important;
   background-position: 50% 50% !important;
 }
