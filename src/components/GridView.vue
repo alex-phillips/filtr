@@ -53,14 +53,20 @@
         No media
       </div>
     </q-infinite-scroll>
+    <resize-observer @notify="getContainerWidth"></resize-observer>
   </div>
 </template>
 
 <script>
 import JustifiedLayout from 'justified-layout'
+import { ResizeObserver } from 'vue-resize'
 
 export default {
   name: 'PageIndex',
+
+  components: {
+    ResizeObserver
+  },
 
   created () {
     this.reset()
@@ -96,21 +102,8 @@ export default {
     }
   },
 
-  mounted () {
-    window.addEventListener('resize', this.getContainerWidth)
-    this.getContainerWidth()
-  },
-
-  beforeDestroy () {
-    window.removeEventListener('resize', this.getContainerWidth)
-  },
-
   computed: {
     layoutBoxes () {
-      if (!this.containerWidth) {
-        return []
-      }
-
       let config = JustifiedLayout(this.media, {
         containerWidth: this.containerWidth,
         containerPadding: 10
@@ -121,9 +114,7 @@ export default {
 
   methods: {
     getContainerWidth () {
-      // need to subtract some pixels since the scroll bar isn't loaded in
-      // until we actually start showing some images...
-      this.containerWidth = this.$refs.gridContainer.clientWidth - 10
+      this.containerWidth = this.$refs.gridContainer.clientWidth
     },
 
     reset () {
@@ -212,6 +203,7 @@ export default {
 
 <style>
 .grid-container {
+  position: relative;
   padding-top: 50px;
   width: 100%;
 }

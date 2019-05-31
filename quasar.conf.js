@@ -7,7 +7,8 @@ module.exports = function (ctx) {
     boot: [
       'axios',
       'config',
-      'lazyload'
+      'lazyload',
+      'resize'
     ],
 
     css: [
