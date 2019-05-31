@@ -25,7 +25,7 @@ export function getAlbumLineage (state) {
       }
     }
 
-    return lineage
+    return lineage.reverse()
   }
 }
 
