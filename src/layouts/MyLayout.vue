@@ -11,7 +11,7 @@
     </q-header>
 
     <q-page-container>
-      <router-view :key="$route.path" />
+      <router-view :key="$route.fullPath" />
     </q-page-container>
   </q-layout>
 </template>
