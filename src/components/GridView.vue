@@ -112,7 +112,8 @@ export default {
       }
 
       let config = JustifiedLayout(this.media, {
-        containerWidth: this.containerWidth
+        containerWidth: this.containerWidth,
+        containerPadding: 10
       })
       return config.boxes
     }
@@ -122,7 +123,7 @@ export default {
     getContainerWidth () {
       // need to subtract some pixels since the scroll bar isn't loaded in
       // until we actually start showing some images...
-      this.containerWidth = this.$refs.gridContainer.clientWidth - 5
+      this.containerWidth = this.$refs.gridContainer.clientWidth - 10
     },
 
     reset () {
@@ -144,6 +145,8 @@ export default {
     selectMedia (index, event) {
       let media = this.media[index]
       if (!(event.ctrlKey || event.shiftKey || event.metaKey) && !this.selectMode) {
+        this.$store.commit('media/setIndex', index)
+        this.$store.commit('media/setMedia', this.media)
         return this.$router.push(`/media/${media.id}`)
       }
 
@@ -210,7 +213,7 @@ export default {
 <style>
 .grid-container {
   padding-top: 50px;
-  width: 100%
+  width: 100%;
 }
 
 .justified-layout-container {

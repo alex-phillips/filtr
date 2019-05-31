@@ -81,7 +81,40 @@ export default {
     this.src = `${this.$config.server.base_url}/media/${this.$route.params.id}/original`
   },
 
+  mounted () {
+    window.addEventListener('keyup', this.onKeypress, false)
+  },
+
+  beforeDestroy () {
+    window.removeEventListener('keyup', this.onKeypress, false)
+  },
+
   methods: {
+    onKeypress (e) {
+      console.log(e)
+      let media = null
+      let index = this.$store.getters['media/getIndex']
+      switch (e.keyCode) {
+        case 39:
+          media = this.$store.getters['media/getNext']
+          index += 1
+          break
+        case 37:
+          media = this.$store.getters['media/getPrevious']
+          index -= 1
+          break
+        case 27:
+          this.$router.go(-1)
+          break
+      }
+
+      if (media) {
+        console.log(index)
+        this.$store.commit('media/setIndex', index)
+        this.$router.replace(media.url)
+      }
+    },
+
     async addToAlbum (album) {
       await this.$axios.put(`${this.$config.server.base_url}/media/${this.media.id}/`, {
         albums: this.media.albums.concat([album.id])
