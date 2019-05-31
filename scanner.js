@@ -80,9 +80,18 @@ class Scanner {
       }
     })
 
+    let stat = fs.statSync(file)
+    if (photo && photo.size === stat.size) {
+      return photo
+    }
+
     let imageInfo = await this.getImageInformation(file)
     if (!photo) {
-      photo = await db.Media.create({ ...imageInfo, mimetype: mimetype })
+      photo = await db.Media.create({
+        ...imageInfo,
+        size: stat.size,
+        mimetype: mimetype
+      })
     }
 
     return photo
@@ -122,14 +131,11 @@ class Scanner {
   }
 
   async getImageInformation (filepath) {
-    let stat = fs.statSync(filepath)
-
-    var imageInfo = await sharp(filepath).metadata()
+    let imageInfo = await sharp(filepath).metadata()
 
     return {
       path: filepath,
       name: path.basename(filepath, path.extname(filepath)),
-      size: stat.size,
       width: imageInfo.width,
       height: imageInfo.height,
       checksum: this.getFileMd5(filepath)
