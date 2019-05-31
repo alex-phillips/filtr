@@ -1,14 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-toolbar-title>
-          Filtr
-        </q-toolbar-title>
-
-        <search></search>
-      </q-toolbar>
-    </q-header>
+    <global-toolbar></global-toolbar>
 
     <q-page-container>
       <router-view :key="$route.fullPath" />
@@ -18,13 +10,13 @@
 
 <script>
 import { openURL } from 'quasar'
-import Search from '../components/Search'
+import GlobalToolbar from '../components/GlobalToolbar'
 
 export default {
   name: 'MyLayout',
 
   components: {
-    Search
+    GlobalToolbar
   },
 
   methods: {

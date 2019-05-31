@@ -1,14 +1,6 @@
 <template>
   <q-layout view="hHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-toolbar-title>
-          Filtr
-        </q-toolbar-title>
-
-        <search></search>
-      </q-toolbar>
-    </q-header>
+    <global-toolbar></global-toolbar>
 
     <q-drawer
       v-model="drawerOpen"
@@ -47,13 +39,13 @@
 </style>
 
 <script>
-import Search from '../components/Search'
+import GlobalToolbar from '../components/GlobalToolbar'
 
 export default {
   name: 'FoldersLayout',
 
   components: {
-    Search
+    GlobalToolbar
   },
 
   data () {
