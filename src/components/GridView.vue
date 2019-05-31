@@ -23,7 +23,7 @@
       </div>
 
       <div class="media" v-if="layoutBoxes.length > 0">
-        <q-item-label header>Media</q-item-label>
+        <q-item-label header v-if="albums.length > 0">Media</q-item-label>
         <div class="justified-layout-container">
           <q-img
             v-for="(box, index) in layoutBoxes"
