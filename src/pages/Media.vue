@@ -91,7 +91,6 @@ export default {
 
   methods: {
     onKeypress (e) {
-      console.log(e)
       let media = null
       let index = this.$store.getters['media/getIndex']
       switch (e.keyCode) {
@@ -109,7 +108,6 @@ export default {
       }
 
       if (media) {
-        console.log(index)
         this.$store.commit('media/setIndex', index)
         this.$router.replace(media.url)
       }
@@ -123,13 +121,6 @@ export default {
 
     mediaUpdated (media) {
       this.media = media
-    }
-  },
-
-  events: {
-    'escape-pressed': () => {
-      // Do something to respond to down arrow press.
-      console.log('Down pressed!')
     }
   }
 }

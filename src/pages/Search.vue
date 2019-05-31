@@ -73,7 +73,6 @@ export default {
 
   methods: {
     async getData () {
-      console.log(this.$route)
       let response = await this.$axios.get(`${this.$config.server.base_url}/search?query=${this.$route.query.query}`)
 
       this.media = response.data.media

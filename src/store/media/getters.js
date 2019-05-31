@@ -7,7 +7,6 @@ export function getIndex (state) {
 }
 
 export function getNext (state) {
-  console.log(state)
   if (state.index === state.media.length - 1) {
     return null
   }
