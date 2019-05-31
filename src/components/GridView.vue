@@ -102,6 +102,10 @@ export default {
     }
   },
 
+  mounted () {
+    this.getContainerWidth()
+  },
+
   computed: {
     layoutBoxes () {
       let config = JustifiedLayout(this.media, {
