@@ -23,7 +23,7 @@
       </div>
 
       <div class="media" v-if="media.length > 0">
-        <q-item-label header>Media</q-item-label>
+        <q-item-label header v-if="albums.length > 0">Media</q-item-label>
         <div class="q-pa-md q-gutter-sm justify-start row">
           <q-img
             v-for="(image, index) in media"
