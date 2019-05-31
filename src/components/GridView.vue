@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding-top: 50px;">
     <q-infinite-scroll @load="loadMore">
       <div class="albums" v-if="albums.length > 0">
         <q-item-label header>Albums</q-item-label>
@@ -9,8 +9,8 @@
             v-bind:key="album.id"
             :class="{ selected: album.selected }"
             @click="selectAlbum(index, $event)"
-            class="image-preview"
-            :src="`${$config.server.base_url}/media/${album.previewId}/thumbnail`"
+            class="album-preview"
+            v-lazy:background="`${$config.server.base_url}/media/${album.previewId}/thumbnail`"
             spinner-color="primary"
           >
             <template v-slot:error>
@@ -24,15 +24,16 @@
 
       <div class="media" v-if="media.length > 0">
         <q-item-label header>Media</q-item-label>
-        <div class="q-pa-md q-gutter-sm">
+        <div class="q-pa-md q-gutter-sm justify-start row">
           <q-img
             v-for="(image, index) in media"
             v-bind:key="image.id"
             :class="{ selected: image.selected }"
             @click="selectMedia(index, $event)"
             class="image-preview"
-            :src="`${$config.server.base_url}/media/${image.id}/thumbnail/`"
+            v-lazy:background="`${$config.server.base_url}/media/${image.id}/thumbnail/`"
             spinner-color="primary"
+            :style="{ width: `${image.width * 140 / image.height}px` }"
           >
             <template v-slot:error>
               <div class="absolute-full flex flex-center bg-negative text-white">
@@ -167,10 +168,19 @@ export default {
 </script>
 
 <style>
+.album-preview {
+  border: 1px solid black;
+  width: 140px;
+  height: 140px;
+  background-size: cover !important;
+  background-position: 50% 50% !important;
+}
+
 .image-preview {
   border: 1px solid black;
   height: 140px;
-  max-width: 150px;
+  background-size: cover !important;
+  background-position: 50% 50% !important;
 }
 
 .selected {
