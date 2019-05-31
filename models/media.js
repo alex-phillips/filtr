@@ -70,14 +70,12 @@ class Media extends Sequelize.Model {
       return thumbnail
     }
 
-    let w = this.width
-    let h = this.height
-    if (this.width >= this.height) {
-      w = 150
-      h = Math.round(h * 150 / this.width)
-    } else {
-      h = 150
-      w = Math.round(w * 150 / this.height)
+    let h = 350
+    let w = Math.round(this.width * h / this.height)
+
+    // Don't make a thumbnail if it's smaller than what we're going to make anyway
+    if (this.height <= h) {
+      return this.path
     }
 
     if (this.mimetype.match(/video\//)) {
