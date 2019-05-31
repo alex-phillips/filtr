@@ -7,7 +7,6 @@
       :breakpoint="700"
       show-if-above
       elevated
-      overlay
     >
       <q-scroll-area class="fit">
         <q-input ref="filter" filled v-model="filter" label="Filter" @keyup.esc="filter = ''">
