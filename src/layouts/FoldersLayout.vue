@@ -18,6 +18,12 @@
 
     >
       <q-scroll-area class="fit">
+        <q-input ref="filter" filled v-model="filter" label="Filter" @keyup.esc="filter = ''">
+          <template v-slot:append>
+            <q-icon v-if="filter !== ''" name="clear" class="cursor-pointer" @click="filter = ''"/>
+          </template>
+        </q-input>
+
         <div class="q-pa-sm">
           <q-tree
             :nodes="folderTree"
@@ -25,6 +31,7 @@
             :selected.sync="selectedFolderId"
             node-key="id"
             @update:selected="goToFolder"
+            :filter="filter"
           />
         </div>
       </q-scroll-area>
@@ -52,7 +59,8 @@ export default {
   data () {
     return {
       drawerOpen: true,
-      selectedFolderId: null
+      selectedFolderId: null,
+      filter: ''
     }
   },
 
