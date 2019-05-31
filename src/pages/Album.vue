@@ -17,16 +17,19 @@
 
     <q-page-sticky expand position="top">
       <q-toolbar class="bg-grey-3">
+        <top-level-nav></top-level-nav>
+
         <q-breadcrumbs>
           <q-breadcrumbs-el
-            icon="home"
             to="/albums"
+            label="Albums"
           />
           <q-breadcrumbs-el
             v-for="item in lineage"
             :key="item.id"
             :label="item.name"
             :to="item.url"
+            icon="photo_album"
           />
         </q-breadcrumbs>
 
@@ -73,6 +76,7 @@ import AlbumEditor from '../components/dlg/AlbumEditor'
 import AlbumSelector from '../components/dlg/AlbumSelector'
 import Confirm from '../components/dlg/Confirm'
 import MediaEditor from '../components/dlg/MediaEditor'
+import TopLevelNav from '../components/TopLevelNav'
 
 export default {
   name: 'AlbumIndex',
@@ -82,7 +86,8 @@ export default {
     AlbumEditor,
     AlbumSelector,
     Confirm,
-    MediaEditor
+    MediaEditor,
+    TopLevelNav
   },
 
   data () {

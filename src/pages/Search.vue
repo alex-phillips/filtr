@@ -12,7 +12,9 @@
 
     <q-page-sticky expand position="top">
       <q-toolbar class="bg-grey-3">
-        <q-btn flat to="/" round dense icon="home" />
+        <top-level-nav></top-level-nav>
+
+        <q-item-label>Search Results: {{ $route.query.query }}</q-item-label>
 
         <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
           <q-icon name="close"></q-icon>DESELECT ALL
@@ -44,6 +46,7 @@
 import GridView from '../components/GridView'
 import AlbumSelector from '../components/dlg/AlbumSelector'
 import MediaEditor from '../components/dlg/MediaEditor'
+import TopLevelNav from '../components/TopLevelNav'
 
 export default {
   name: 'AlbumIndex',
@@ -51,7 +54,8 @@ export default {
   components: {
     GridView,
     AlbumSelector,
-    MediaEditor
+    MediaEditor,
+    TopLevelNav
   },
 
   data () {

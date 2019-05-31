@@ -1,5 +1,8 @@
 <template>
   <q-page>
+    <album-selector ref="albumSelector" @selected="addToAlbum"></album-selector>
+    <media-editor ref="mediaEditor" :media="selectedMedia"></media-editor>
+
     <grid-view
       ref="gridView"
       :media="media"
@@ -9,23 +12,21 @@
 
     <q-page-sticky expand position="top">
       <q-toolbar class="bg-grey-3">
-        <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
-          <q-icon name="close"></q-icon>DESELECT ALL
-        </q-btn>
+        <top-level-nav></top-level-nav>
 
         <q-breadcrumbs
           v-if="tag.id !== undefined"
         >
-          <q-breadcrumbs-el
-            icon="home"
-            to="/"
-          />
           <q-breadcrumbs-el
             icon="local_offer"
             :label="tag.name"
             to="/albums"
           />
         </q-breadcrumbs>
+
+        <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
+          <q-icon name="close"></q-icon>DESELECT ALL
+        </q-btn>
 
         <q-toolbar-title></q-toolbar-title>
 
@@ -37,9 +38,6 @@
               </q-item>
               <q-item clickable v-close-popup>
                 <q-item-section @click="$refs.albumSelector.open()">Add to album...</q-item-section>
-              </q-item>
-              <q-item clickable v-close-popup v-if="!!album">
-                <q-item-section @click="$refs.confirmRemoveImages.open()">Remove from album</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -54,12 +52,18 @@
 
 <script>
 import GridView from '../components/GridView'
+import AlbumSelector from '../components/dlg/AlbumSelector'
+import MediaEditor from '../components/dlg/MediaEditor'
+import TopLevelNav from '../components/TopLevelNav'
 
 export default {
   name: 'PageIndex',
 
   components: {
-    GridView
+    GridView,
+    AlbumSelector,
+    MediaEditor,
+    TopLevelNav
   },
 
   data () {
