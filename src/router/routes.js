@@ -16,7 +16,10 @@ const routes = [
   },
   {
     path: '/media/:id',
-    component: () => import('pages/Media.vue')
+    component: () => import('layouts/EmptyLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/Media.vue') }
+    ]
   },
   {
     path: '/albums/:id',
