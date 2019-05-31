@@ -12,6 +12,7 @@ const { Op } = require('sequelize')
 class Scanner {
   constructor (path) {
     this.path = path
+    this.pathCache = {}
   }
 
   async run () {
@@ -38,9 +39,16 @@ class Scanner {
         continue
       }
 
-      let filepath = path.dirname(media.path).split('/').filter(p => p !== '')
+      let dirpath = path.dirname(media.path)
+
+      // If we've already processed this path, just set the folder and continue
+      if (this.pathCache[dirpath]) {
+        media.setFolder(this.pathCache[dirpath])
+        continue
+      }
+
       let parent = null
-      for (let dir of filepath) {
+      for (let dir of dirpath.split('/').filter(p => p !== '')) {
         let parentId = parent !== null ? parent.id : null
         parent = (await db.Folder.findOrCreate({
           where: {
@@ -52,6 +60,7 @@ class Scanner {
         folderIds.add(parent.id)
       }
 
+      this.pathCache[dirpath] = parent.id
       media.setFolder(parent)
     }
 
