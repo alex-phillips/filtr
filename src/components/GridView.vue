@@ -29,7 +29,8 @@
             v-for="(box, index) in layoutBoxes"
             v-bind:key="media[index].id"
             :class="{ selected: media[index].selected }"
-            @click="selectMedia(index, $event)"
+            @click="onMediaClick(index, $event)"
+            v-touch-hold.mouse="() => selectMedia(index)"
             class="image-preview"
             v-lazy:background="`${$config.server.base_url}/media/${media[index].id}/thumbnail/`"
             spinner-color="primary"
@@ -137,7 +138,7 @@ export default {
       })
     },
 
-    selectMedia (index, event) {
+    onMediaClick (index, $event) {
       let media = this.media[index]
       if (!(event.ctrlKey || event.shiftKey || event.metaKey) && !this.selectMode) {
         this.$store.commit('media/setIndex', index)
@@ -145,8 +146,15 @@ export default {
         return this.$router.push(`/media/${media.id}`)
       }
 
+      this.selectMedia(index)
+    },
+
+    selectMedia (index) {
+      console.log('selected')
+      let media = this.media[index]
+
       let selection = []
-      if (event.shiftKey && this.selectedMediaIndex !== null) {
+      if (event && event.shiftKey && this.selectedMediaIndex !== null) {
         let min = Math.min(...[this.selectedMediaIndex, index])
         let max = Math.max(...[this.selectedMediaIndex, index])
 

@@ -38,7 +38,10 @@
         @mediaUpdated="mediaUpdated"
       ></info-drawer>
 
-      <q-page>
+      <q-page
+        v-touch-swipe.mouse.left="goToNext"
+        v-touch-swipe.mouse.right="goToPrevious"
+      >
           <img class="media" :class="[ isZoomed ? '' : 'media-fit']" :src="src" contain v-if="media.mimetype && media.mimetype.match(/image\//)"/>
           <q-video
             class="media"
@@ -96,21 +99,46 @@ export default {
 
   methods: {
     onKeypress (e) {
-      let media = null
-      let index = this.$store.getters['media/getIndex']
       switch (e.keyCode) {
         case 39:
-          media = this.$store.getters['media/getNext']
-          index += 1
+          this.goToNext()
           break
         case 37:
-          media = this.$store.getters['media/getPrevious']
-          index -= 1
+          this.goToPrevious()
           break
         case 27:
           this.$router.go(-1)
           break
       }
+    },
+
+    goToNext () {
+      if (this.isZoomed) {
+        return
+      }
+
+      let index = this.$store.getters['media/getIndex']
+
+      let media = this.$store.getters['media/getNext']
+      index += 1
+
+      console.log(media)
+
+      if (media) {
+        this.$store.commit('media/setIndex', index)
+        this.$router.replace(media.url)
+      }
+    },
+
+    goToPrevious () {
+      if (this.isZoomed) {
+        return
+      }
+
+      let index = this.$store.getters['media/getIndex']
+
+      let media = this.$store.getters['media/getPrevious']
+      index -= 1
 
       if (media) {
         this.$store.commit('media/setIndex', index)
