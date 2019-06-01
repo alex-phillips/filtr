@@ -61,6 +61,12 @@ export default {
     }
   },
 
+  mounted () {
+    // Set the selected ID here since when we navigate to the route,
+    // it isn't selected from the previous click
+    this.selectedFolderId = parseInt(this.$route.params.id)
+  },
+
   methods: {
     goToFolder () {
       // Apparently if you click on the node in the tree that is currently
