@@ -1,5 +1,5 @@
 <template>
- <q-dialog ref="dialog" @before-show="reset()">
+ <q-dialog ref="dialog" @before-show="reset">
     <q-card style="width: 500px; max-width: 80vw;">
       <q-card-section>
         <div v-if="!album.name" class="text-h6">Create New Album</div>
@@ -9,7 +9,7 @@
       <q-separator />
 
       <q-card-section style="max-height: 50vh" class="scroll">
-        <q-input v-model="name" label="Name"></q-input>
+        <q-input v-model="name" label="Name" @keyup.enter="submit()"></q-input>
 
         <q-input
           v-model="description"
@@ -17,7 +17,12 @@
           autogrow
           type="textarea"
         />
+      </q-card-section>
 
+      <q-separator />
+
+      <q-card-section v-if="albumTree.length > 0">
+        <qdiv>Parent Album</qdiv>
         <q-input ref="filter" dense v-model="treeFilter" label="Filter">
           <template v-slot:append>
             <q-icon v-if="treeFilter !== ''" name="clear" class="cursor-pointer" @click="treeFilter = ''" />
@@ -86,6 +91,7 @@ export default {
     reset () {
       this.name = ''
       this.description = ''
+      this.treeFilter = ''
     },
 
     async submit () {

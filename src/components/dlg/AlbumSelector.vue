@@ -7,7 +7,7 @@
 
       <q-separator />
 
-      <q-card-section style="max-height: 50vh" class="scroll">
+      <q-card-section v-if="albumTree.length > 0" style="max-height: 50vh" class="scroll">
         <q-input ref="filter" dense v-model="treeFilter" label="Filter">
           <template v-slot:append>
             <q-icon v-if="treeFilter !== ''" name="clear" class="cursor-pointer" @click="treeFilter = ''" />
@@ -22,6 +22,10 @@
           node-key="id"
           @update:selected="selectAlbum"
         />
+      </q-card-section>
+
+      <q-card-section v-else>
+        No albums
       </q-card-section>
 
       <q-separator />
