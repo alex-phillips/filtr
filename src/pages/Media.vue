@@ -39,7 +39,7 @@
       ></info-drawer>
 
       <q-page>
-          <img class="media" :src="src" contain v-if="media.mimetype && media.mimetype.match(/image\//)"/>
+          <img class="media" :class="[ isZoomed ? '' : 'media-fit']" :src="src" contain v-if="media.mimetype && media.mimetype.match(/image\//)"/>
           <q-video
             class="media"
             v-else-if="media.mimetype && media.mimetype.match(/video\//)"
@@ -49,6 +49,10 @@
 
         <q-page-sticky position="bottom-right" :offset="[18, 18]">
           <q-btn fab icon="info" color="primary" @click="infoDrawerOpen = !infoDrawerOpen"/>
+        </q-page-sticky>
+
+        <q-page-sticky position="bottom-right" :offset="[18, 85]" v-if="media.mimetype && media.mimetype.match(/image\//)">
+          <q-btn fab :icon="isZoomed ? 'zoom_out' : 'zoom_in'" color="primary" @click="isZoomed = !isZoomed"/>
         </q-page-sticky>
       </q-page>
     </q-page-container>
@@ -71,7 +75,8 @@ export default {
       src: null,
       media: {
         type: null
-      }
+      },
+      isZoomed: false
     }
   },
 
@@ -133,10 +138,13 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  margin: auto;
   width: auto;
   height: auto;
+}
+
+.media-fit {
   max-width: 100%;
   max-height: 100%;
+  margin: auto;
 }
 </style>
