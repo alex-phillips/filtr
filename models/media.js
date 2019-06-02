@@ -36,7 +36,8 @@ class Media extends Sequelize.Model {
       height: DataTypes.INTEGER,
       mimetype: DataTypes.STRING,
       size: DataTypes.INTEGER,
-      checksum: DataTypes.STRING
+      checksum: DataTypes.STRING,
+      lastModified: DataTypes.DATE
     }, { sequelize })
   }
 
@@ -66,7 +67,9 @@ class Media extends Sequelize.Model {
   async getThumbnail () {
     let thumbnail = `${process.env.BASE_DIR}/cache/thumbnails/${this.id}.png`
 
-    if (fs.existsSync(thumbnail)) {
+    let stat = fs.statSync(this.path)
+
+    if (fs.existsSync(thumbnail) && stat.mtime.toString() === this.lastModified.toString()) {
       return thumbnail
     }
 
@@ -100,6 +103,7 @@ class Media extends Sequelize.Model {
       //   break
       default:
         await sharp(this.path).resize({ width: w }).toFile(thumbnail)
+        fs.utimesSync(thumbnail, new Date(this.lastModified), new Date(this.lastModified))
     }
 
     return thumbnail

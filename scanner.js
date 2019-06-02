@@ -81,7 +81,7 @@ class Scanner {
     })
 
     let stat = fs.statSync(file)
-    if (photo && photo.size === stat.size) {
+    if (photo && photo.size === stat.size && photo.lastModified.toString() === (new Date(stat.mtime).toString())) {
       return photo
     }
 
@@ -90,7 +90,8 @@ class Scanner {
       photo = await db.Media.create({
         ...imageInfo,
         size: stat.size,
-        mimetype: mimetype
+        mimetype: mimetype,
+        lastModified: new Date(stat.mtime)
       })
     }
 

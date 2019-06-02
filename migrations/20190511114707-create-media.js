@@ -33,6 +33,10 @@ module.exports = {
       checksum: {
         type: Sequelize.STRING
       },
+      lastModified: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
