@@ -53,6 +53,10 @@ router.get('/:id/thumbnail', wrap(async (req, res, next) => {
     }
   })
 
+  if (!media) {
+    return res.status(404)
+  }
+
   res.sendFile(await media.getThumbnail())
 }))
 
