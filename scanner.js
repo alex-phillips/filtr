@@ -197,4 +197,9 @@ class Scanner {
   }
 }
 
-module.exports = Scanner
+if (require.main === module) {
+  let scanner = new Scanner(process.argv[2])
+  scanner.run()
+} else {
+  module.exports = Scanner
+}
