@@ -124,25 +124,15 @@ router.put('/:id/media/:media_ids', wrap(async (req, res, next) => {
  * Remove media from an album
  */
 router.delete('/:id/media/:media_ids', wrap(async (req, res, next) => {
-  let retval = []
-  let ids = req.params.media_ids.split(',')
-  for (let id of ids) {
-    let media = await db.Media.findOne({
-      where: {
-        id: id
-      }
-    })
-
-    try {
-      media.removeAlbum(req.params.id)
-    } catch (err) {
-      console.log(err)
+  let album = await db.Album.findOne({
+    where: {
+      id: req.params.id
     }
+  })
 
-    retval.push(media)
-  }
+  await album.removeMedia(req.params.media_ids.split(','))
 
-  return res.json(retval)
+  return res.json(album)
 }))
 
 module.exports = router
