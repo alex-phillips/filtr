@@ -46,6 +46,8 @@ import AlbumSelector from '../components/dlg/AlbumSelector'
 import MediaEditor from '../components/dlg/MediaEditor'
 import TopLevelNav from '../components/TopLevelNav'
 
+import GridViewWatcher from '../mixins/GridViewWatcher'
+
 export default {
   name: 'PageIndex',
 
@@ -56,11 +58,13 @@ export default {
     TopLevelNav
   },
 
+  mixins: [
+    GridViewWatcher
+  ],
+
   data () {
     return {
-      media: [],
-      selectedMedia: [],
-      selectMode: false
+      media: []
     }
   },
 
@@ -85,19 +89,6 @@ export default {
       if (done) {
         done()
       }
-    },
-
-    selected (selectedMedia) {
-      this.selectedMedia = [...selectedMedia]
-      this.selectMode = selectedMedia.size !== 0
-    },
-
-    async addToAlbum (album) {
-      let ids = [...this.selectedMedia].map(m => m.id)
-      this.$store.dispatch('albums/addToAlbum', {
-        album: album,
-        ids: ids
-      })
     }
   }
 }

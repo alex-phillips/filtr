@@ -56,6 +56,8 @@ import AlbumSelector from '../components/dlg/AlbumSelector'
 import MediaEditor from '../components/dlg/MediaEditor'
 import TopLevelNav from '../components/TopLevelNav'
 
+import GridViewWatcher from '../mixins/GridViewWatcher'
+
 export default {
   name: 'PageIndex',
 
@@ -66,12 +68,15 @@ export default {
     TopLevelNav
   },
 
+  mixins: [
+    GridViewWatcher
+  ],
+
   data () {
     return {
       tag: {},
       dataUrl: null,
-      media: [],
-      selectMode: false
+      media: []
     }
   },
 
@@ -81,11 +86,6 @@ export default {
   },
 
   methods: {
-    selected (selectedMedia) {
-      this.selectedMedia = [...selectedMedia]
-      this.selectMode = selectedMedia.size !== 0
-    },
-
     async getData (index, done) {
       let response = await this.$axios.get(`${this.dataUrl}/media/?offset=${this.media.length}`)
       this.media = this.media.concat(response.data)

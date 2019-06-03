@@ -78,6 +78,8 @@ import Confirm from '../components/dlg/Confirm'
 import MediaEditor from '../components/dlg/MediaEditor'
 import TopLevelNav from '../components/TopLevelNav'
 
+import GridViewWatcher from '../mixins/GridViewWatcher'
+
 export default {
   name: 'AlbumIndex',
 
@@ -90,14 +92,16 @@ export default {
     TopLevelNav
   },
 
+  mixins: [
+    GridViewWatcher
+  ],
+
   data () {
     return {
       dataUrl: null,
       album: {},
       albums: [],
-      media: [],
-      selectedMedia: [],
-      selectMode: false
+      media: []
     }
   },
 
@@ -144,19 +148,6 @@ export default {
       }
     },
 
-    selected (selectedMedia) {
-      this.selectedMedia = [...selectedMedia]
-      this.selectMode = selectedMedia.size !== 0
-    },
-
-    async addToAlbum (album) {
-      let ids = [...this.selectedMedia].map(m => m.id)
-      this.$store.dispatch('albums/addToAlbum', {
-        album: album,
-        ids: ids
-      })
-    },
-
     async deleteAlbum () {
       await this.$axios.delete(this.dataUrl)
       this.$store.commit('albums/deleteAlbum', this.album)
@@ -165,16 +156,9 @@ export default {
     },
 
     async removeFromAlbum () {
-      let selectedIds = new Set([...this.selectedMedia].map(m => m.id))
-      let ids = []
-      this.media.filter(img => {
-        if (!selectedIds.has(img.id)) {
-          ids.push(img.id)
-        }
-      })
-
-      await this.$axios.delete(`${this.$config.server.base_url}/albums/${this.album.id}/media/${ids.join(',')}`)
-
+      let selectedIds = [...this.selectedMedia].map(m => m.id)
+      await this.$axios.delete(`${this.$config.server.base_url}/albums/${this.album.id}/media/${selectedIds.join(',')}`)
+      this.media = this.media.filter(m => !selectedIds.includes(m.id))
       this.$emit('updatedAlbum')
     }
   }
