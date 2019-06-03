@@ -14,6 +14,32 @@ router.get('/config', wrap(async (req, res, next) => {
   res.json(await db.Config.findAll())
 }))
 
+router.post('/config', wrap(async (req, res, next) => {
+  let retval = []
+  for (let key in req.body) {
+    let config = await db.Config.findOne({
+      where: {
+        name: key
+      }
+    })
+
+    if (!config) {
+      config = await db.Config.create({
+        name: key,
+        value: req.body[key]
+      })
+    } else {
+      config.update({
+        value: req.body[key]
+      })
+    }
+
+    retval.push(config)
+  }
+
+  return res.json(retval)
+}))
+
 router.put('/config', wrap(async (req, res, next) => {
   for (let key in req.body) {
     await db.Config.update({

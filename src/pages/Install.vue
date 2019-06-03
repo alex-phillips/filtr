@@ -56,7 +56,7 @@ export default {
     },
 
     async submit () {
-      await this.$axios.put(`${this.$config.server.base_url}/config`, {
+      await this.$axios.post(`${this.$config.server.base_url}/config`, {
         path: this.path
       })
 
