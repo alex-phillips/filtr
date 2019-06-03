@@ -12,7 +12,7 @@ class Socket {
     }
 
     for (let route in routes) {
-      this.connection.on(route, this.routes[route])
+      this.connection.on(route, routes[route])
     }
   }
 
