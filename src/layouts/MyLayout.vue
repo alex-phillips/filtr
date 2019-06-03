@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import { openURL } from 'quasar'
 import GlobalToolbar from '../components/GlobalToolbar'
 import SettingsDrawer from '../components/SettingsDrawer'
 
@@ -21,10 +20,6 @@ export default {
   components: {
     GlobalToolbar,
     SettingsDrawer
-  },
-
-  methods: {
-    openURL
   }
 }
 </script>

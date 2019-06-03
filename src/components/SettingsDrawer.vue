@@ -10,7 +10,13 @@
       elevated
     >
       <q-scroll-area class="fit">
-        <search></search>
+        <q-input v-if="$q.screen.lt.sm" filled v-model="searchText" input-class="text-right" @keyup.enter="$router.push(`/search?query=${searchText}`)">
+          <template v-slot:append>
+            <q-icon v-if="searchText === ''" name="search" />
+            <q-icon v-else name="clear" class="cursor-pointer" @click="searchText = ''" />
+          </template>
+        </q-input>
+
         <q-list>
           <q-item
             clickable
@@ -42,17 +48,16 @@
 </template>
 
 <script>
-import Search from './Search'
 import Settings from './dlg/Settings'
 
 export default {
   components: {
-    Search,
     Settings
   },
 
   data () {
     return {
+      searchText: '',
       isOpen: false
     }
   },
