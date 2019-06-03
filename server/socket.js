@@ -4,14 +4,14 @@ const db = require('../models/index')
 const libraryScanner = new Scanner()
 
 class Socket {
-  routes = {
-    'scan': this.scan
-  }
-
   constructor (connection) {
     this.connection = connection
 
-    for (let route in this.routes) {
+    let routes = {
+      'scan': this.scan
+    }
+
+    for (let route in routes) {
       this.connection.on(route, this.routes[route])
     }
   }
