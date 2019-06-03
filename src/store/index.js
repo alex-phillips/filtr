@@ -5,6 +5,7 @@ import tags from './tags'
 import albums from './albums'
 import folders from './folders'
 import media from './media'
+import config from './config'
 
 Vue.use(Vuex)
 
@@ -19,7 +20,8 @@ export default function (/* { ssrContext } */) {
       tags,
       albums,
       folders,
-      media
+      media,
+      config
     },
 
     // enable strict mode (adds overhead!)

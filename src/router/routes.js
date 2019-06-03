@@ -48,6 +48,13 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Search.vue') }
     ]
+  },
+  {
+    path: '/install',
+    component: () => import('layouts/EmptyLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/Install.vue') }
+    ]
   }
 ]
 

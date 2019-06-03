@@ -2,7 +2,7 @@
 
 require('../bootstrap')
 
-const debug = require('debug')('shoutout-board:server')
+const debug = require('debug')
 const http = require('http')
 const createError = require('http-errors')
 const express = require('express')
@@ -49,6 +49,12 @@ app.set('port', port)
  * Create HTTP server.
  */
 const server = http.createServer(app)
+
+const io = require('socket.io')(server)
+const Socket = require('./socket')
+io.on('connection', socket => {
+  let connection = new Socket(socket)
+})
 
 /**
  * Listen on provided port, on all network interfaces.

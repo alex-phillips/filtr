@@ -55,7 +55,7 @@
         </q-page-sticky>
 
         <q-page-sticky position="bottom-right" :offset="[18, 85]" v-if="media.mimetype && media.mimetype.match(/image\//)">
-          <q-btn fab :icon="isZoomed ? 'zoom_out' : 'zoom_in'" color="primary" @click="isZoomed = !isZoomed"/>
+          <q-btn fab :icon="isZoomed ? 'zoom_out' : 'zoom_in'" color="primary" @click="toggleZoom"/>
         </q-page-sticky>
       </q-page>
     </q-page-container>
@@ -98,6 +98,13 @@ export default {
   },
 
   methods: {
+    toggleZoom () {
+      this.isZoomed = !this.isZoomed
+      if (this.isZoomed) {
+        this.infoDrawerOpen = false
+      }
+    },
+
     onKeypress (e) {
       switch (e.keyCode) {
         case 39:
@@ -121,8 +128,6 @@ export default {
 
       let media = this.$store.getters['media/getNext']
       index += 1
-
-      console.log(media)
 
       if (media) {
         this.$store.commit('media/setIndex', index)

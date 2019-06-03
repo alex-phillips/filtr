@@ -8,7 +8,8 @@ module.exports = function (ctx) {
       'axios',
       'config',
       'lazyload',
-      'resize'
+      'resize',
+      'socketio'
     ],
 
     css: [
@@ -61,7 +62,10 @@ module.exports = function (ctx) {
         'QBreadcrumbsEl',
         'QBtnDropdown',
         'QTree',
-        'QScrollArea'
+        'QScrollArea',
+        'QStepper',
+        'QStep',
+        'QStepperNavigation'
       ],
 
       directives: [
