@@ -21,6 +21,6 @@ yarn-error.log*
 .history
 
 # App-specific stuff
-config.js
+./config.js
 cache/
 
