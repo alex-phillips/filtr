@@ -20,10 +20,6 @@
 
         <q-toolbar-title></q-toolbar-title>
 
-        <q-btn flat>
-          <q-icon name="refresh" @click="scanLibrary"></q-icon>
-        </q-btn>
-
         <q-btn flat round dense icon="more_vert" v-if="selectMode">
           <q-menu>
             <q-list style="min-width: 150px">
@@ -102,10 +98,6 @@ export default {
         album: album,
         ids: ids
       })
-    },
-
-    scanLibrary () {
-      this.$socket.emit('scan', {})
     }
   }
 }
