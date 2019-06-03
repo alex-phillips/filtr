@@ -124,7 +124,7 @@ export default {
 
     reset () {
       for (let asset of this.media) {
-        asset.selected = false
+        this.$set(asset, 'selected', false)
       }
 
       this.selectMode = false
@@ -150,7 +150,6 @@ export default {
     },
 
     selectMedia (index) {
-      console.log('selected')
       let media = this.media[index]
 
       let selection = []
