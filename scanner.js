@@ -12,13 +12,25 @@ const { Op } = require('sequelize')
 class Scanner {
   constructor (path) {
     this.path = path
-    this.pathCache = {}
+    this.running = false
+  }
+
+  setPath (path) {
+    this.path = path
+  }
+
+  isRunning () {
+    return this.running
   }
 
   async run () {
-    let files = this.walk(this.path)
+    this.running = true
 
+    let pathCache = {}
+    let mediaCache = new Set()
     let folderIds = new Set()
+
+    let files = this.walk(this.path)
     for (let file of files) {
       let mimetype = await db.Media.getMIMEType(file)
 
@@ -39,11 +51,13 @@ class Scanner {
         continue
       }
 
+      mediaCache.add(media.id)
+
       let dirpath = path.dirname(media.path)
 
       // If we've already processed this path, just set the folder and continue
-      if (this.pathCache[dirpath]) {
-        media.setFolder(this.pathCache[dirpath])
+      if (pathCache[dirpath]) {
+        media.setFolder(pathCache[dirpath])
         continue
       }
 
@@ -60,7 +74,7 @@ class Scanner {
         folderIds.add(parent.id)
       }
 
-      this.pathCache[dirpath] = parent.id
+      pathCache[dirpath] = parent.id
       media.setFolder(parent)
     }
 
@@ -71,6 +85,16 @@ class Scanner {
         }
       }
     })
+
+    db.Media.destroy({
+      where: {
+        id: {
+          [Op.notIn]: [...mediaCache]
+        }
+      }
+    })
+
+    this.running = false
   }
 
   async processImage (file, mimetype) {
@@ -83,6 +107,11 @@ class Scanner {
     let stat = fs.statSync(file)
     if (photo && photo.size === stat.size && photo.lastModified.toString() === (new Date(stat.mtime).toString())) {
       return photo
+    }
+
+    // Remove thumbnail if it exists and the photo was updated
+    if (photo && fs.existsSync(photo.getThumbnailPath())) {
+      fs.unlinkSync(photo.getThumbnailPath())
     }
 
     let imageInfo = await this.getImageInformation(file)
@@ -168,5 +197,4 @@ class Scanner {
   }
 }
 
-let scanner = new Scanner(process.argv[2])
-scanner.run()
+module.exports = Scanner
