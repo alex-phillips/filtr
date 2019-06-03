@@ -60,12 +60,16 @@ class Media extends Sequelize.Model {
     })
   }
 
+  getThumbnailPath () {
+    return `${process.env.BASE_DIR}/cache/thumbnails/${this.id}.png`
+  }
+
   /**
    * Retreive the thumbnail filepath and generate it if it doesn't
    * already exist
    */
   async getThumbnail () {
-    let thumbnail = `${process.env.BASE_DIR}/cache/thumbnails/${this.id}.png`
+    let thumbnail = this.getThumbnailPath()
 
     let stat = fs.statSync(this.path)
 
