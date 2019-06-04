@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh Lpr lFf">
+  <q-layout view="hHh LpR lFf">
     <global-toolbar @toggle-drawer="$refs.settingsDrawer.toggle()"></global-toolbar>
 
     <q-page-container>
