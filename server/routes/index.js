@@ -55,7 +55,7 @@ router.get('/config', wrap(async (req, res, next) => {
 router.post('/config', wrap(async (req, res, next) => {
   let user = await auth.authorize(req, res, next)
   if (!user) {
-    return res.status(403)
+    return res.status(403).json([])
   }
 
   let retval = []
@@ -86,7 +86,7 @@ router.post('/config', wrap(async (req, res, next) => {
 router.put('/config', wrap(async (req, res, next) => {
   let user = await auth.authorize(req, res, next)
   if (!user) {
-    return res.status(403)
+    return res.status(403).json([])
   }
 
   for (let key in req.body) {
@@ -197,6 +197,3 @@ router.get('/search', wrap(async (req, res, next) => {
 }))
 
 module.exports = router
-function newFunction (user) {
-  console.log(user)
-}

@@ -66,7 +66,11 @@ module.exports = function (ctx) {
         'QStepper',
         'QStep',
         'QStepperNavigation',
-        'QForm'
+        'QForm',
+        'QTab',
+        'QTabs',
+        'QTabPanel',
+        'QTabPanels'
       ],
 
       directives: [

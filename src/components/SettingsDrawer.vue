@@ -1,6 +1,6 @@
 <template>
   <div>
-    <settings ref="settings"></settings>
+    <settings ref="settings" v-if="$store.getters['users/isLoggedIn']"></settings>
     <login ref="login"></login>
 
     <q-drawer
@@ -57,6 +57,19 @@
 
             <q-item-section>Log In</q-item-section>
           </q-item>
+
+          <q-item
+            v-if="$store.getters['users/isLoggedIn']"
+            clickable
+            v-ripple
+            @click="logout"
+          >
+            <q-item-section avatar>
+              <q-icon color="primary" name="person_outline" />
+            </q-item-section>
+
+            <q-item-section>Log Out</q-item-section>
+          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -87,6 +100,11 @@ export default {
 
     toggle () {
       this.$refs.drawer.toggle()
+    },
+
+    logout () {
+      this.$store.commit('users/logout')
+      this.$router.go('/')
     }
   }
 }

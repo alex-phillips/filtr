@@ -1,5 +1,5 @@
 <template>
- <q-dialog ref="dialog">
+  <q-dialog ref="dialog">
     <q-card style="width: 500px; max-width: 80vw;">
       <q-card-section>
         <div class="text-h6">Settings</div>
@@ -8,13 +8,31 @@
       <q-separator />
 
       <q-card-section style="max-height: 50vh" class="scroll">
-        <q-input
-          v-for="(item, index) in config"
-          :key="index"
-          v-model="config[index].value"
-          :label="item.name"
-          :type="configTypes[item.name] || 'text'"
-        />
+        <q-tabs
+          v-model="tab"
+          dense
+          class="text-grey"
+          active-color="primary"
+          indicator-color="primary"
+          align="justify"
+          narrow-indicator
+        >
+          <q-tab name="settings" label="Settings" />
+        </q-tabs>
+
+        <q-separator />
+
+        <q-tab-panels v-model="tab" animated>
+          <q-tab-panel name="settings">
+            <q-input
+              v-for="(item, index) in config"
+              :key="index"
+              v-model="config[index].value"
+              :label="item.name"
+              :type="configTypes[item.name] || 'text'"
+            />
+          </q-tab-panel>
+        </q-tab-panels>
       </q-card-section>
 
       <q-separator />
@@ -31,7 +49,8 @@
 export default {
   data () {
     return {
-      configTypes: {}
+      configTypes: {},
+      tab: 'settings'
     }
   },
 

@@ -7,7 +7,7 @@ const auth = require('../middleware/auth')
 router.get('/', wrap(async (req, res, next) => {
   let user = await auth.authorize(req, res, next)
   if (!user) {
-    return res.status(403)
+    return res.status(403).json([])
   }
 
   return res.json(await db.User.findAll())

@@ -27,6 +27,7 @@
             type="password"
             lazy-rules
             :rules="[ val => val && val.length > 0 || 'Password is required!' ]"
+            @keyup.enter="submit"
           ></q-input>
 
           <div>
@@ -86,8 +87,7 @@ export default {
       }
 
       this.$store.commit('users/setUser', response.data)
-
-      this.$emit('loggedIn', response.data)
+      this.$router.go(this.$route.fullPath)
     }
   }
 }
