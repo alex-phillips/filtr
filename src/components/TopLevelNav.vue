@@ -1,5 +1,5 @@
 <template>
-  <q-btn-dropdown stretch flat :label="currentLabel">
+  <q-btn-dropdown flat :label="currentLabel">
     <q-list>
       <q-item
         v-for="item in config"
