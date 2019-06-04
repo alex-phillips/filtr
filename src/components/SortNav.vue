@@ -7,6 +7,7 @@
         clickable
         v-close-popup
         @click="sortBy(mode)"
+        :class="{ 'text-orange': mode === current }"
       >
         <q-item-section>
           <q-item-label>{{ name }}</q-item-label>

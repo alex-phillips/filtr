@@ -10,16 +10,42 @@
     >
       <q-step
         :name="1"
+        title="User Creation"
+        icon="person_add"
+        :done="step > 1"
+      >
+        Let's start by creating an admin account!
+        <q-form>
+          <q-input
+           dense
+           v-model="email"
+           label="Email"
+           lazy-rules
+           :rules="[ val => val && val.length > 0 || 'Email is required!' ]"
+          ></q-input>
+          <q-input
+           dense
+           v-model="password"
+           label="Password"
+           type="password"
+           lazy-rules
+           :rules="[ val => val && val.length > 0 || 'Password is required!' ]"
+          ></q-input>
+        </q-form>
+      </q-step>
+
+      <q-step
+        :name="2"
         title="Library Setup"
         icon="photo_library"
-        :done="step > 1"
+        :done="step > 2"
       >
         Tell me where I can find your photos!
         <q-input dense v-model="path" label="Path"></q-input>
       </q-step>
 
       <q-step
-        :name="2"
+        :name="3"
         title="Finish"
         icon="done_all"
       >
@@ -28,7 +54,7 @@
 
       <template v-slot:navigation>
         <q-stepper-navigation>
-          <q-btn @click="nextStep" color="primary" :label="step === 2 ? 'Finish' : 'Continue'" />
+          <q-btn @click="nextStep" color="primary" :label="step === 3 ? 'Finish' : 'Continue'" />
           <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back" class="q-ml-sm" />
         </q-stepper-navigation>
       </template>
@@ -41,14 +67,16 @@
 export default {
   data () {
     return {
+      email: '',
+      password: '',
       path: '',
       step: 1
     }
   },
 
   methods: {
-    nextStep () {
-      if (this.step === 2) {
+    async nextStep () {
+      if (this.step === 3) {
         return this.submit()
       }
 
@@ -56,6 +84,27 @@ export default {
     },
 
     async submit () {
+      try {
+        await this.$axios.post(`${this.$config.server.base_url}/users`, {
+          email: this.email,
+          password: this.password
+        })
+
+        let response = await this.$axios.post(`${this.$config.server.base_url}/login`, {
+          email: this.email,
+          password: this.password
+        })
+
+        this.$store.commit('users/setUser', response.data)
+      } catch (err) {
+        return this.$q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'fas fa-exclamation-triangle',
+          message: err.response.data.message
+        })
+      }
+
       await this.$axios.post(`${this.$config.server.base_url}/config`, {
         path: this.path
       })

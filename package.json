@@ -23,6 +23,8 @@
     "jsonwebtoken": "^8.5.1",
     "justified-layout": "^2.1.2",
     "mmmagic": "^0.5.3",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
     "quasar": "^1.0.0-beta.24",
     "sequelize": "^5.8.6",
     "sharp": "^0.22.1",

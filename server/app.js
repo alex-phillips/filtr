@@ -8,6 +8,7 @@ const createError = require('http-errors')
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
+const db = require('../models/index')
 
 const app = express()
 
@@ -18,6 +19,13 @@ app.use(express.urlencoded({
 app.use(cors())
 
 /**
+ * Set up and register passport for authentication
+ */
+const passport = require('passport')
+app.use(passport.initialize())
+require('./passport')(passport)
+
+/**
  * Import and use routes
  */
 const routes = {
@@ -25,7 +33,8 @@ const routes = {
   'media': require('./routes/media'),
   'albums': require('./routes/albums'),
   'tags': require('./routes/tags'),
-  'folders': require('./routes/folders')
+  'folders': require('./routes/folders'),
+  'users': require('./routes/users')
 }
 
 app.use(express.static(path.join(__dirname, '../dist/spa/')))

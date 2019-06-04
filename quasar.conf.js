@@ -65,7 +65,8 @@ module.exports = function (ctx) {
         'QScrollArea',
         'QStepper',
         'QStep',
-        'QStepperNavigation'
+        'QStepperNavigation',
+        'QForm'
       ],
 
       directives: [
@@ -78,7 +79,9 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
-        'Notify'
+        'Notify',
+
+        'LocalStorage'
       ]
 
       // iconSet: 'ionicons-v4'

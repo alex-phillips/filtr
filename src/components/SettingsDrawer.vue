@@ -1,6 +1,7 @@
 <template>
   <div>
     <settings ref="settings"></settings>
+    <login ref="login"></login>
 
     <q-drawer
       ref="drawer"
@@ -19,6 +20,7 @@
 
         <q-list>
           <q-item
+            v-if="$store.getters['users/isLoggedIn']"
             clickable
             v-ripple
             @click="$refs.settings.open()"
@@ -31,6 +33,7 @@
           </q-item>
 
           <q-item
+            v-if="$store.getters['users/isLoggedIn']"
             clickable
             v-ripple
             @click="scanLibrary"
@@ -41,6 +44,19 @@
 
             <q-item-section>Scan Library</q-item-section>
           </q-item>
+
+          <q-item
+            v-if="!$store.getters['users/isLoggedIn']"
+            clickable
+            v-ripple
+            @click="$refs.login.open()"
+          >
+            <q-item-section avatar>
+              <q-icon color="primary" name="person_outline" />
+            </q-item-section>
+
+            <q-item-section>Log In</q-item-section>
+          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -49,10 +65,12 @@
 
 <script>
 import Settings from './dlg/Settings'
+import Login from './dlg/Login'
 
 export default {
   components: {
-    Settings
+    Settings,
+    Login
   },
 
   data () {

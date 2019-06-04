@@ -4,17 +4,60 @@ const path = require('path')
 const db = require('../../models/index')
 const wrap = require('../middleware/routeWrapper')
 const { Op } = require('sequelize')
+const jwt = require('jsonwebtoken')
+const auth = require('../middleware/auth')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.sendfile(path.join(__dirname, '../../dist/spa/index.html'))
 })
 
+router.post('/login', wrap(async (req, res, next) => {
+  let user = await db.User.findOne({
+    where: {
+      email: req.body.email
+    }
+  })
+
+  if (!user || !user.verifyPassword(req.body.password)) {
+    return res.status(403).json([])
+  }
+
+  let payload = {
+    id: user.id,
+    emaill: user.email,
+    updated: user.updatedAt.toString()
+  }
+
+  let token = jwt.sign(payload, '$dacHDq4itaegfpQV-si21AZL1-!FT^ssPSjU0QP', {
+    expiresIn: 36000
+  })
+
+  return res.json({
+    ...user.toJSON(),
+    token: `Bearer ${token}`
+  })
+}))
+
+router.get('/ping', wrap(async (req, res, next) => {
+  let user = await auth.authorize(req, res, next)
+  if (!user) {
+    return res.status(403).json([])
+  }
+
+  return res.json([])
+}))
+
 router.get('/config', wrap(async (req, res, next) => {
   res.json(await db.Config.findAll())
 }))
 
 router.post('/config', wrap(async (req, res, next) => {
+  let user = await auth.authorize(req, res, next)
+  if (!user) {
+    return res.status(403)
+  }
+
   let retval = []
   for (let key in req.body) {
     let config = await db.Config.findOne({
@@ -41,6 +84,11 @@ router.post('/config', wrap(async (req, res, next) => {
 }))
 
 router.put('/config', wrap(async (req, res, next) => {
+  let user = await auth.authorize(req, res, next)
+  if (!user) {
+    return res.status(403)
+  }
+
   for (let key in req.body) {
     await db.Config.update({
       value: req.body[key]
@@ -149,3 +197,6 @@ router.get('/search', wrap(async (req, res, next) => {
 }))
 
 module.exports = router
+function newFunction (user) {
+  console.log(user)
+}

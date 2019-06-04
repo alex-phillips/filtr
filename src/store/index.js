@@ -6,6 +6,7 @@ import albums from './albums'
 import folders from './folders'
 import media from './media'
 import config from './config'
+import users from './users'
 
 Vue.use(Vuex)
 
@@ -21,7 +22,8 @@ export default function (/* { ssrContext } */) {
       albums,
       folders,
       media,
-      config
+      config,
+      users
     },
 
     // enable strict mode (adds overhead!)
