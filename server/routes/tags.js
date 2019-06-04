@@ -43,7 +43,14 @@ router.get('/:id/media', wrap(async (req, res, next) => {
 
   let media = await tag.getMedia({
     limit: 50,
-    offset: req.query.offset || 0
+    offset: req.query.offset || 0,
+    order: db.Media.buildOrderQuery(req.query.sortMode, req.query.order),
+    include: [
+      {
+        model: db.Tag,
+        as: 'tags'
+      }
+    ]
   })
 
   return res.json(media)

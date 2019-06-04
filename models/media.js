@@ -135,6 +135,21 @@ class Media extends Sequelize.Model {
       })
     })
   }
+
+  static buildOrderQuery (mode, direction) {
+    let order = []
+    direction = (direction || 'desc').toUpperCase()
+    switch (mode) {
+      case 'date_added':
+        order.push(['id', direction])
+        break
+      case 'name':
+        order.push(['name', direction])
+        break
+    }
+
+    return order
+  }
 }
 
 module.exports = Media

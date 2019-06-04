@@ -19,6 +19,8 @@
       <q-toolbar class="bg-grey-3">
         <top-level-nav></top-level-nav>
 
+        <sort-nav @sort="sort"></sort-nav>
+
         <q-breadcrumbs>
           <q-breadcrumbs-el
             to="/albums"
@@ -77,8 +79,10 @@ import AlbumSelector from '../components/dlg/AlbumSelector'
 import Confirm from '../components/dlg/Confirm'
 import MediaEditor from '../components/dlg/MediaEditor'
 import TopLevelNav from '../components/TopLevelNav'
+import SortNav from '../components/SortNav'
 
 import GridViewWatcher from '../mixins/GridViewWatcher'
+import SortableMedia from '../mixins/SortableMedia'
 
 export default {
   name: 'AlbumIndex',
@@ -89,11 +93,13 @@ export default {
     AlbumSelector,
     Confirm,
     MediaEditor,
-    TopLevelNav
+    TopLevelNav,
+    SortNav
   },
 
   mixins: [
-    GridViewWatcher
+    GridViewWatcher,
+    SortableMedia
   ],
 
   data () {
@@ -130,13 +136,26 @@ export default {
       this.albums = this.album.children
     },
 
+    sort (config) {
+      this.setSortConfig(config)
+      this.media = []
+      this.getData()
+    },
+
     async getData (index, done) {
       if (!this.album.id) {
         let response = await this.$axios.get(`${this.dataUrl}`)
         this.album = response.data
       }
 
-      let response = await this.$axios.get(`${this.dataUrl}/media/?offset=${this.media.length}`)
+      let query = {
+        offset: this.media.length,
+        sortMode: this.sortMode,
+        order: this.sortOrder
+      }
+      query = Object.keys(query).map((key, i) => `${key}=${query[key]}`).join('&')
+
+      let response = await this.$axios.get(`${this.dataUrl}/media/?${query}`)
       this.media = this.media.concat(response.data)
 
       if (response.data.length === 0) {

@@ -28,7 +28,8 @@ router.get('/:id/media', wrap(async (req, res, next) => {
       folderId: req.params.id
     },
     limit: 50,
-    offset: req.query.offset || 0
+    offset: req.query.offset || 0,
+    order: db.Media.buildOrderQuery(req.query.sortMode, req.query.order)
   })
 
   return res.json(media)

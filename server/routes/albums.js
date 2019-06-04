@@ -54,6 +54,7 @@ router.get('/:id/media', wrap(async (req, res, next) => {
 
   let media = await album.getMedia({
     limit: 50,
+    order: db.Media.buildOrderQuery(req.query.sortMode, req.query.order),
     offset: req.query.offset || 0
   })
 

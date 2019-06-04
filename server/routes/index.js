@@ -109,6 +109,42 @@ router.get('/search', wrap(async (req, res, next) => {
     }))
   }
 
+  let direction = (req.query.order || 'desc').toUpperCase()
+
+  let sortField = null
+  switch (req.query.sortMode) {
+    case 'date_added':
+      sortField = 'id'
+      break
+    case 'name':
+      sortField = 'name'
+      break
+  }
+
+  if (sortField) {
+    retval.media.sort((a, b) => {
+      let comparison = 0
+      switch (direction) {
+        case 'ASC':
+          if (a[sortField] > b[sortField]) {
+            comparison = 1
+          } else if (a[sortField] < b[sortField]) {
+            comparison = -1
+          }
+          break
+        case 'DESC':
+          if (a[sortField] < b[sortField]) {
+            comparison = 1
+          } else if (a[sortField] > b[sortField]) {
+            comparison = -1
+          }
+          break
+      }
+
+      return comparison
+    })
+  }
+
   res.json(retval)
 }))
 

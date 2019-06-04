@@ -14,6 +14,8 @@
       <q-toolbar class="bg-grey-3">
         <top-level-nav></top-level-nav>
 
+        <sort-nav @sort="sort"></sort-nav>
+
         <q-item-label>Search Results: {{ $route.query.query }}</q-item-label>
 
         <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
@@ -47,8 +49,10 @@ import GridView from '../components/GridView'
 import AlbumSelector from '../components/dlg/AlbumSelector'
 import MediaEditor from '../components/dlg/MediaEditor'
 import TopLevelNav from '../components/TopLevelNav'
+import SortNav from '../components/SortNav'
 
 import GridViewWatcher from '../mixins/GridViewWatcher'
+import SortableMedia from '../mixins/SortableMedia'
 
 export default {
   name: 'AlbumIndex',
@@ -57,11 +61,13 @@ export default {
     GridView,
     AlbumSelector,
     MediaEditor,
-    TopLevelNav
+    TopLevelNav,
+    SortNav
   },
 
   mixins: [
-    GridViewWatcher
+    GridViewWatcher,
+    SortableMedia
   ],
 
   data () {
@@ -76,8 +82,22 @@ export default {
   },
 
   methods: {
+    sort (config) {
+      this.setSortConfig(config)
+      this.media = []
+      this.getData()
+    },
+
     async getData () {
-      let response = await this.$axios.get(`${this.$config.server.base_url}/search?query=${this.$route.query.query}`)
+      let query = {
+        offset: this.media.length,
+        sortMode: this.sortMode,
+        order: this.sortOrder,
+        query: this.$route.query.query
+      }
+      query = Object.keys(query).map((key, i) => `${key}=${query[key]}`).join('&')
+
+      let response = await this.$axios.get(`${this.$config.server.base_url}/search?${query}`)
 
       this.media = response.data.media
       this.albums = response.data.albums

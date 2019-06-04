@@ -8,6 +8,7 @@ router.get('/', wrap(async (req, res, next) => {
   return res.json(await db.Media.findAll({
     limit: limit,
     offset: req.query.offset || 0,
+    order: db.Media.buildOrderQuery(req.query.sortMode, req.query.order),
     include: {
       model: db.Tag,
       as: 'tags',
