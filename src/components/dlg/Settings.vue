@@ -68,7 +68,9 @@
 export default {
   data () {
     return {
-      configTypes: {},
+      configTypes: {
+        path: 'textarea'
+      },
       tab: 'settings',
       currentPassword: '',
       password1: '',
