@@ -3,6 +3,7 @@
     <global-toolbar @toggle-drawer="$refs.settingsDrawer.toggle()"></global-toolbar>
 
     <q-drawer
+      v-if="$store.getters['folders/rootFolders'].length > 0"
       v-model="drawerOpen"
       :breakpoint="700"
       show-if-above
