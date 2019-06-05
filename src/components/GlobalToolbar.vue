@@ -1,5 +1,8 @@
 <template>
   <div>
+    <settings ref="settings" v-if="$store.getters['users/isLoggedIn']"></settings>
+    <login ref="login"></login>
+
     <q-header elevated>
       <q-toolbar>
         <q-btn
@@ -32,23 +35,78 @@
             <q-icon v-else name="clear" class="cursor-pointer" @click="searchText = ''" />
           </template>
         </q-input>
-        <q-btn flat round dense icon="menu" clickable @click="$emit('toggle-drawer')"></q-btn>
+
+        <q-btn v-if="$q.screen.gt.xs" flat round icon="person" clickable>
+          <q-menu ref="settingsMenu">
+            <settings-menu @item-selected="menuItemSelected"></settings-menu>
+          </q-menu>
+        </q-btn>
+        <q-btn v-else flat round icon="person" clickable @click="$refs.settingsDrawer.toggle()"></q-btn>
       </q-toolbar>
     </q-header>
+
+    <q-drawer
+      v-model="drawerIsOpen"
+      side="right"
+      :breakpoint="700"
+      elevated
+      ref="settingsDrawer"
+    >
+      <q-scroll-area class="fit">
+        <q-input v-if="$q.screen.lt.sm" filled v-model="searchText" input-class="text-right" @keyup.enter="$router.push(`/search?query=${searchText}`)">
+          <template v-slot:append>
+            <q-icon v-if="searchText === ''" name="search" />
+            <q-icon v-else name="clear" class="cursor-pointer" @click="searchText = ''" />
+          </template>
+        </q-input>
+
+        <settings-menu @item-selected="menuItemSelected"></settings-menu>
+      </q-scroll-area>
+    </q-drawer>
   </div>
 </template>
 
 <script>
+import SettingsMenu from './SettingsMenu'
+import Settings from './dlg/Settings'
+import Login from './dlg/Login'
+
 export default {
+  components: {
+    SettingsMenu,
+    Settings,
+    Login
+  },
+
   data () {
     return {
-      searchText: ''
+      searchText: '',
+      drawerIsOpen: false
     }
   },
 
   methods: {
     scanLibrary () {
       this.$socket.emit('scan')
+    },
+
+    openMenu () {
+      if (this.$q.screen.gt.xs) {
+
+      } else {
+        this.drawerIsOpen = !this.drawerIsOpen
+      }
+    },
+
+    menuItemSelected (item) {
+      switch (item) {
+        case 'settings':
+          this.$refs.settings.open()
+          break
+        case 'login':
+          this.$refs.login.open()
+          break
+      }
     }
   }
 }

@@ -22,7 +22,6 @@ export default {
   methods: {
     async initialize () {
       try {
-        console.log('ping')
         let user = await this.$axios.get(`${this.$config.server.base_url}/ping`)
         this.$store.commit('users/setUser', user)
       } catch (e) {

@@ -5,21 +5,17 @@
     <q-page-container>
       <router-view :key="$route.fullPath" />
     </q-page-container>
-
-    <settings-drawer ref="settingsDrawer"></settings-drawer>
   </q-layout>
 </template>
 
 <script>
 import GlobalToolbar from '../components/GlobalToolbar'
-import SettingsDrawer from '../components/SettingsDrawer'
 
 export default {
   name: 'MyLayout',
 
   components: {
-    GlobalToolbar,
-    SettingsDrawer
+    GlobalToolbar
   }
 }
 </script>

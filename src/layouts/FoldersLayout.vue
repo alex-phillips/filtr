@@ -31,8 +31,6 @@
     <q-page-container>
       <router-view :key="$route.path" @toggle-drawer="drawerOpen = !drawerOpen"/>
     </q-page-container>
-
-    <settings-drawer ref="settingsDrawer"></settings-drawer>
   </q-layout>
 </template>
 
@@ -41,14 +39,12 @@
 
 <script>
 import GlobalToolbar from '../components/GlobalToolbar'
-import SettingsDrawer from '../components/SettingsDrawer'
 
 export default {
   name: 'FoldersLayout',
 
   components: {
-    GlobalToolbar,
-    SettingsDrawer
+    GlobalToolbar
   },
 
   data () {
