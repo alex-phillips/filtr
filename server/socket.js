@@ -35,6 +35,7 @@ class Socket {
         await libraryScanner.run()
         this.emit('scan', 'Scan completed!')
       } catch (err) {
+        libraryScanner.running = false
         this.emit('scan', 'There was a problem running the scan: ', err.message)
       }
     }
