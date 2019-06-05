@@ -197,7 +197,7 @@ class Scanner {
 
 if (require.main === module) {
   let scanner = new Scanner()
-  scanner.run(process.argv[2])
+  scanner.run(process.argv.slice(2))
 } else {
   module.exports = Scanner
 }
