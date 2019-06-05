@@ -22,7 +22,10 @@ class User extends Sequelize.Model {
   }
 
   toJSON () {
-    return this.get()
+    let retval = this.get()
+    delete retval.password
+
+    return retval
   }
 }
 
