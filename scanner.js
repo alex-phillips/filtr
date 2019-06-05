@@ -12,10 +12,6 @@ const { Op } = require('sequelize')
 class Scanner {
   constructor () {
     this.running = false
-
-    this.pathCache = {}
-    this.mediaCache = new Set()
-    this.folderIds = new Set()
   }
 
   isRunning () {
@@ -24,6 +20,10 @@ class Scanner {
 
   async run (paths) {
     this.running = true
+
+    this.pathCache = {}
+    this.mediaCache = new Set()
+    this.folderIds = new Set()
 
     for (let dir of paths) {
       let files = this.walk(dir)
