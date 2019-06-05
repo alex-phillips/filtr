@@ -21,14 +21,12 @@ export default {
 
   methods: {
     async initialize () {
-      let user = this.$q.localStorage.getItem('user')
-      if (user && user.token) {
+      try {
+        console.log('ping')
+        let user = await this.$axios.get(`${this.$config.server.base_url}/ping`)
         this.$store.commit('users/setUser', user)
-        try {
-          await this.$axios.get(`${this.$config.server.base_url}/ping`)
-        } catch (e) {
-          this.$store.commit('users/logout')
-        }
+      } catch (e) {
+        this.$store.commit('users/logout')
       }
 
       this.$store.dispatch('tags/getTags')

@@ -7,8 +7,10 @@ const http = require('http')
 const createError = require('http-errors')
 const express = require('express')
 const cors = require('cors')
+const cookieParser = require('cookie-parser')
 const path = require('path')
 const db = require('../models/index')
+const auth = require('./middleware/auth')
 
 const app = express()
 
@@ -16,7 +18,11 @@ app.use(express.json())
 app.use(express.urlencoded({
   extended: false
 }))
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:8080',
+  credentials: true
+}))
+app.use(cookieParser())
 
 /**
  * Set up and register passport for authentication
@@ -38,6 +44,8 @@ const routes = {
 }
 
 app.use(express.static(path.join(__dirname, '../dist/spa/')))
+
+app.use(auth.authorize)
 
 for (let route in routes) {
   app.use(`/${route}`, routes[route])

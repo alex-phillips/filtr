@@ -1,15 +1,14 @@
 const passport = require('passport')
 
 module.exports = {
-  async authorize (req, res, next) {
-    return new Promise((resolve, reject) => {
-      passport.authorize('jwt', { session: false }, (err, user) => {
-        if (err) {
-          return reject(err)
-        }
+  authorize: function (req, res, next) {
+    passport.authorize('jwt', { session: false }, (err, user) => {
+      if (err) {
+        req.user = null
+      }
 
-        return resolve(user)
-      })(req, res, next)
-    })
+      req.user = user
+      next()
+    })(req, res, next)
   }
 }

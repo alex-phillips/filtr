@@ -2,11 +2,9 @@ const express = require('express')
 const router = express.Router()
 const db = require('../../models/index')
 const wrap = require('../middleware/routeWrapper')
-const auth = require('../middleware/auth')
 
 router.get('/', wrap(async (req, res, next) => {
-  let user = await auth.authorize(req, res, next)
-  if (!user) {
+  if (!req.user) {
     return res.status(403).json([])
   }
 

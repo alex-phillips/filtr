@@ -8,40 +8,47 @@
       <q-separator />
 
       <q-card-section style="max-height: 50vh" class="scroll">
-        <q-input v-if="media.length === 1" v-model="name" label="Name">
-        </q-input>
+        <q-form
+          @submit="submit"
+          @reset="reset"
+          class="q-gutter-md"
+        >
+          <q-input v-if="media.length === 1" v-model="name" label="Name">
+          </q-input>
 
-        <q-input
-          v-if="media.length === 1"
-          v-model="description"
-          label="Description"
-          autogrow
-          type="textarea"
-        />
+          <q-input
+            v-if="media.length === 1"
+            v-model="description"
+            label="Description"
+            autogrow
+            type="textarea"
+          />
 
-        <q-select
-          ref="tagSelect"
-          label="Tags"
-          v-model="selectedTags"
-          use-input
-          use-chips
-          multiple
-          clearable
-          input-debounce="0"
-          new-value-mode="add-unique"
-          @new-value="newTag"
-          :options="filteredOptions"
-          @filter="filterFn"
-        />
+          <q-select
+            ref="tagSelect"
+            label="Tags"
+            v-model="selectedTags"
+            use-input
+            use-chips
+            multiple
+            clearable
+            input-debounce="0"
+            new-value-mode="add-unique"
+            @new-value="newTag"
+            :options="filteredOptions"
+            @filter="filterFn"
+          />
 
+          <div class="q-gutter-sm">
+            <q-checkbox left-label v-model="isPublic" label="Public" />
+          </div>
+
+          <div>
+            <q-btn label="Submit" type="submit" color="primary"/>
+            <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+          </div>
+        </q-form>
       </q-card-section>
-
-      <q-separator />
-
-      <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="primary" @click="close()" />
-        <q-btn flat label="Save" color="primary" @click="submit()" />
-      </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
@@ -64,7 +71,8 @@ export default {
       // Options for tag selection
       options: [],
       filteredOptions: [],
-      selectedTags: []
+      selectedTags: [],
+      isPublic: false
     }
   },
   methods: {
@@ -92,6 +100,9 @@ export default {
       this.selectedTags = []
 
       if (this.media.length === 1) {
+        this.name = this.media[0].name
+        this.description = this.media[0].description
+        this.isPublic = this.media[0].public
         let existing = this.$store.getters['tags/getTagsByIDs'](this.media[0].tags.map(t => t.id))
         for (let t of existing) {
           this.selectedTags.push({
@@ -145,6 +156,7 @@ export default {
     },
 
     async submit () {
+      console.log(this.isPublic)
       let tags = []
       for (let tag of this.selectedTags) {
         tags.push(tag.value)
@@ -153,7 +165,8 @@ export default {
       let ids = this.media.map(m => m.id)
 
       let params = {
-        tags: tags
+        tags: tags,
+        public: this.isPublic === true ? 1 : 0
       }
 
       // Only update name and description if editing a single media item

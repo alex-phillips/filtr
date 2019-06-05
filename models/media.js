@@ -37,7 +37,8 @@ class Media extends Sequelize.Model {
       mimetype: DataTypes.STRING,
       size: DataTypes.INTEGER,
       checksum: DataTypes.STRING,
-      lastModified: DataTypes.DATE
+      lastModified: DataTypes.DATE,
+      public: DataTypes.BOOLEAN
     }, { sequelize })
   }
 

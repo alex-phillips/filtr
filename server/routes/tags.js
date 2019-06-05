@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const db = require('../../models/index')
 const wrap = require('../middleware/routeWrapper')
+const passport = require('passport')
 
 router.get('/', wrap(async (req, res, next) => {
   return res.json(await db.Tag.findAll())
@@ -12,15 +13,15 @@ router.get('/:ids', wrap(async (req, res, next) => {
   let tags = await db.Tag.findAll({
     where: {
       id: ids
-    },
-    include: [
-      {
-        model: db.Media,
-        as: 'media',
-        nested: false,
-        attributes: ['id']
-      }
-    ]
+    }
+    // include: [
+    //   {
+    //     model: db.Media,
+    //     as: 'media',
+    //     nested: false,
+    //     attributes: ['id']
+    //   }
+    // ]
   })
 
   if (tags.length === 0) {
@@ -35,16 +36,25 @@ router.get('/:ids', wrap(async (req, res, next) => {
 }))
 
 router.get('/:id/media', wrap(async (req, res, next) => {
+  let where = {
+    id: req.params.id
+  }
+
   let tag = await db.Tag.findOne({
-    where: {
-      id: req.params.id
-    }
+    where: where
   })
+
+  delete where.id
+
+  if (!req.user) {
+    where.public = 1
+  }
 
   let media = await tag.getMedia({
     limit: 50,
     offset: req.query.offset || 0,
     order: db.Media.buildOrderQuery(req.query.sortMode, req.query.order),
+    where: where,
     include: [
       {
         model: db.Tag,
@@ -56,7 +66,7 @@ router.get('/:id/media', wrap(async (req, res, next) => {
   return res.json(media)
 }))
 
-router.post('/', wrap(async (req, res, next) => {
+router.post('/', passport.authenticate('jwt', { session: false }), wrap(async (req, res, next) => {
   let tag = await db.Tag.create({
     name: req.body.name
   })

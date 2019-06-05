@@ -70,7 +70,8 @@ module.exports = function (ctx) {
         'QTab',
         'QTabs',
         'QTabPanel',
-        'QTabPanels'
+        'QTabPanels',
+        'QCheckbox'
       ],
 
       directives: [
@@ -85,7 +86,7 @@ module.exports = function (ctx) {
       plugins: [
         'Notify',
 
-        'LocalStorage'
+        'Cookies'
       ]
 
       // iconSet: 'ionicons-v4'

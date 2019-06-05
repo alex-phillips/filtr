@@ -5,7 +5,7 @@ const db = require('../../models/index')
 const wrap = require('../middleware/routeWrapper')
 const { Op } = require('sequelize')
 const jwt = require('jsonwebtoken')
-const auth = require('../middleware/auth')
+const passport = require('passport')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -35,29 +35,19 @@ router.post('/login', wrap(async (req, res, next) => {
 
   return res.json({
     ...user.toJSON(),
-    token: `Bearer ${token}`
+    token: token
   })
 }))
 
-router.get('/ping', wrap(async (req, res, next) => {
-  let user = await auth.authorize(req, res, next)
-  if (!user) {
-    return res.status(403).json([])
-  }
-
-  return res.json([])
+router.get('/ping', passport.authenticate('jwt', { session: false }), wrap(async (req, res, next) => {
+  return res.json(req.user)
 }))
 
 router.get('/config', wrap(async (req, res, next) => {
   res.json(await db.Config.findAll())
 }))
 
-router.post('/config', wrap(async (req, res, next) => {
-  let user = await auth.authorize(req, res, next)
-  if (!user) {
-    return res.status(403).json([])
-  }
-
+router.post('/config', passport.authenticate('jwt', { session: false }), wrap(async (req, res, next) => {
   let retval = []
   for (let key in req.body) {
     let config = await db.Config.findOne({
@@ -83,12 +73,7 @@ router.post('/config', wrap(async (req, res, next) => {
   return res.json(retval)
 }))
 
-router.put('/config', wrap(async (req, res, next) => {
-  let user = await auth.authorize(req, res, next)
-  if (!user) {
-    return res.status(403).json([])
-  }
-
+router.put('/config', passport.authenticate('jwt', { session: false }), wrap(async (req, res, next) => {
   for (let key in req.body) {
     await db.Config.update({
       value: req.body[key]

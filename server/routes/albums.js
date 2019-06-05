@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const db = require('../../models/index')
 const wrap = require('../middleware/routeWrapper')
+const passport = require('passport')
 
 /**
  * Get all albums
@@ -46,6 +47,11 @@ router.get('/:id', wrap(async (req, res, next) => {
  * Get an album's media
  */
 router.get('/:id/media', wrap(async (req, res, next) => {
+  let where = {}
+  if (!req.user) {
+    where.public = 1
+  }
+
   let album = await db.Album.findOne({
     where: {
       id: req.params.id
@@ -55,7 +61,8 @@ router.get('/:id/media', wrap(async (req, res, next) => {
   let media = await album.getMedia({
     limit: 50,
     order: db.Media.buildOrderQuery(req.query.sortMode, req.query.order),
-    offset: req.query.offset || 0
+    offset: req.query.offset || 0,
+    where: where
   })
 
   return res.json(media)
@@ -64,7 +71,7 @@ router.get('/:id/media', wrap(async (req, res, next) => {
 /**
  * Create a new album
  */
-router.post('/', wrap(async (req, res, next) => {
+router.post('/', passport.authenticate('jwt', { session: false }), wrap(async (req, res, next) => {
   let album = await db.Album.create({
     name: req.body.name,
     description: req.body.description
@@ -80,7 +87,7 @@ router.post('/', wrap(async (req, res, next) => {
 /**
  * Delete an entire album
  */
-router.delete('/:ids', wrap(async (req, res, next) => {
+router.delete('/:ids', passport.authenticate('jwt', { session: false }), wrap(async (req, res, next) => {
   let ids = req.params.ids.split(',')
   await db.Album.destroy({
     where: {
@@ -94,7 +101,7 @@ router.delete('/:ids', wrap(async (req, res, next) => {
 /**
  * Add media to an album
  */
-router.put('/:id/media/:media_ids', wrap(async (req, res, next) => {
+router.put('/:id/media/:media_ids', passport.authenticate('jwt', { session: false }), wrap(async (req, res, next) => {
   let album = await db.Album.findOne({
     where: {
       id: req.params.id
@@ -124,7 +131,7 @@ router.put('/:id/media/:media_ids', wrap(async (req, res, next) => {
 /**
  * Remove media from an album
  */
-router.delete('/:id/media/:media_ids', wrap(async (req, res, next) => {
+router.delete('/:id/media/:media_ids', passport.authenticate('jwt', { session: false }), wrap(async (req, res, next) => {
   let album = await db.Album.findOne({
     where: {
       id: req.params.id

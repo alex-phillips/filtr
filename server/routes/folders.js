@@ -23,10 +23,16 @@ router.get('/', wrap(async (req, res, next) => {
  * Get a folder's media
  */
 router.get('/:id/media', wrap(async (req, res, next) => {
+  let where = {
+    folderId: req.params.id
+  }
+
+  if (!req.user) {
+    where.public = 1
+  }
+
   let media = await db.Media.findAll({
-    where: {
-      folderId: req.params.id
-    },
+    where: where,
     limit: 50,
     offset: req.query.offset || 0,
     order: db.Media.buildOrderQuery(req.query.sortMode, req.query.order)
