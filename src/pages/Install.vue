@@ -95,7 +95,7 @@ export default {
           password: this.password
         })
 
-        this.$store.commit('users/setUser', response.data)
+        this.$store.commit('users/login', response.data)
       } catch (err) {
         return this.$q.notify({
           color: 'red-5',

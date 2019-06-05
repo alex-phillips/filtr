@@ -86,10 +86,7 @@ export default {
         })
       }
 
-      this.$store.commit('users/setUser', response.data)
-      this.$q.cookies.set('jwt', response.data.token, {
-        expires: 3600
-      })
+      this.$store.commit('users/login', response.data)
       this.$router.go(this.$route.fullPath)
     }
   }
