@@ -29,15 +29,9 @@ class Socket {
           name: 'path'
         }
       })
-      libraryScanner.setPath(path.value)
       this.emit('scan', 'Starting library scan...')
-      try {
-        await libraryScanner.run()
-        this.emit('scan', 'Scan completed!')
-      } catch (err) {
-        libraryScanner.running = false
-        this.emit('scan', 'There was a problem running the scan: ', err.message)
-      }
+      await libraryScanner.run(path.value.split('\n'))
+      this.emit('scan', 'Scan completed!')
     }
   }
 }

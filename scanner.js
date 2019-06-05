@@ -10,86 +10,84 @@ const ffmpeg = require('fluent-ffmpeg')
 const { Op } = require('sequelize')
 
 class Scanner {
-  constructor (path) {
-    this.path = path
+  constructor () {
     this.running = false
-  }
 
-  setPath (path) {
-    this.path = path
+    this.pathCache = {}
+    this.mediaCache = new Set()
+    this.folderIds = new Set()
   }
 
   isRunning () {
     return this.running
   }
 
-  async run () {
+  async run (paths) {
     this.running = true
 
-    let pathCache = {}
-    let mediaCache = new Set()
-    let folderIds = new Set()
+    for (let dir of paths) {
+      let files = this.walk(dir)
 
-    let files = this.walk(this.path)
-    for (let file of files) {
-      let mimetype = await db.Media.getMIMEType(file)
+      for (let file of files) {
+        let mimetype = await db.Media.getMIMEType(file)
 
-      console.log(`SCANNING file ${file} with MIMETYPE ${mimetype}`)
+        console.log(`SCANNING file ${file} with MIMETYPE ${mimetype}`)
 
-      let media = null
-      try {
-        if (mimetype.match(/image\/(?:png|jpg|jpeg|gif)/)) {
-          media = await this.processImage(file, mimetype)
-        } else if (mimetype.match(/video\//)) {
-          media = await this.processVideo(file, mimetype)
-        } else {
-          console.log(`Invalid file type: ${mimetype}`)
+        let media = null
+        try {
+          if (mimetype.match(/image\/(?:png|jpg|jpeg|gif)/)) {
+            media = await this.processImage(file, mimetype)
+          } else if (mimetype.match(/video\//)) {
+            media = await this.processVideo(file, mimetype)
+          } else {
+            console.log(`Invalid file type: ${mimetype}`)
+            continue
+          }
+        } catch (err) {
+          console.log(`FAILED to scan file ${file}: `, err.message)
           continue
         }
-      } catch (err) {
-        console.log(`FAILED to scan file ${file}: `, err.message)
-        continue
+
+        this.mediaCache.add(media.id)
+
+        let dirpath = path.dirname(media.path)
+
+        // If we've already processed this path, just set the folder and continue
+        if (this.pathCache[dirpath]) {
+          media.setFolder(this.pathCache[dirpath])
+          continue
+        }
+
+        let parent = null
+        for (let dir of dirpath.split('/').filter(p => p !== '')) {
+          let parentId = parent !== null ? parent.id : null
+          parent = (await db.Folder.findOrCreate({
+            where: {
+              name: dir,
+              parentId: parentId
+            }
+          }))[0]
+
+          this.folderIds.add(parent.id)
+        }
+
+        this.pathCache[dirpath] = parent.id
+        media.setFolder(parent)
       }
-
-      mediaCache.add(media.id)
-
-      let dirpath = path.dirname(media.path)
-
-      // If we've already processed this path, just set the folder and continue
-      if (pathCache[dirpath]) {
-        media.setFolder(pathCache[dirpath])
-        continue
-      }
-
-      let parent = null
-      for (let dir of dirpath.split('/').filter(p => p !== '')) {
-        let parentId = parent !== null ? parent.id : null
-        parent = (await db.Folder.findOrCreate({
-          where: {
-            name: dir,
-            parentId: parentId
-          }
-        }))[0]
-
-        folderIds.add(parent.id)
-      }
-
-      pathCache[dirpath] = parent.id
-      media.setFolder(parent)
     }
 
-    db.Folder.destroy({
+    await db.Folder.destroy({
       where: {
         id: {
-          [Op.notIn]: [...folderIds]
+          [Op.notIn]: [...this.folderIds]
         }
       }
     })
 
-    db.Media.destroy({
+    await db.Media.destroy({
       where: {
         id: {
-          [Op.notIn]: [...mediaCache]
+          [Op.notIn]: [...this.mediaCache]
         }
       }
     })
@@ -198,8 +196,8 @@ class Scanner {
 }
 
 if (require.main === module) {
-  let scanner = new Scanner(process.argv[2])
-  scanner.run()
+  let scanner = new Scanner()
+  scanner.run(process.argv[2])
 } else {
   module.exports = Scanner
 }
