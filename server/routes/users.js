@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const db = require('../../models/index')
 const wrap = require('../middleware/routeWrapper')
-const passport = require('passport')
 
 router.get('/', wrap(async (req, res, next) => {
   if (!req.user) {
@@ -13,6 +12,13 @@ router.get('/', wrap(async (req, res, next) => {
 }))
 
 router.post('/', wrap(async (req, res, next) => {
+  let users = await db.User.findAll()
+
+  // Do we want to prevent user registration unless logged in?
+  if (users.length !== 0 && !req.user) {
+    return res.status(403).json([])
+  }
+
   let existing = await db.User.findOne({
     where: {
       email: req.body.email

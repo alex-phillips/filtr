@@ -14,7 +14,10 @@ router.get('/', wrap(async (req, res, next) => {
   } catch (e) {}
 
   let albums = await db.Album.findAll({
-    where: filter,
+    where: {
+      ...filter,
+      ...!req.user && { public: 1 }
+    },
     include: [
       {
         model: db.Media,
@@ -32,7 +35,8 @@ router.get('/', wrap(async (req, res, next) => {
 router.get('/:id', wrap(async (req, res, next) => {
   let album = await db.Album.findOne({
     where: {
-      id: req.params.id
+      id: req.params.id,
+      ...!req.user && { public: 1 }
     },
     include: {
       model: db.Album,
@@ -47,14 +51,10 @@ router.get('/:id', wrap(async (req, res, next) => {
  * Get an album's media
  */
 router.get('/:id/media', wrap(async (req, res, next) => {
-  let where = {}
-  if (!req.user) {
-    where.public = 1
-  }
-
   let album = await db.Album.findOne({
     where: {
-      id: req.params.id
+      id: req.params.id,
+      ...!req.user && { public: 1 }
     }
   })
 
@@ -62,7 +62,9 @@ router.get('/:id/media', wrap(async (req, res, next) => {
     limit: 50,
     order: db.Media.buildOrderQuery(req.query.sortMode, req.query.order),
     offset: req.query.offset || 0,
-    where: where
+    where: {
+      ...!req.user && { public: 1 }
+    }
   })
 
   return res.json(media)
@@ -80,6 +82,18 @@ router.post('/', passport.authenticate('jwt', { session: false }), wrap(async (r
   if (req.body.parentId) {
     album.setParent(req.body.parentId)
   }
+
+  return res.json(album)
+}))
+
+router.put('/:id', passport.authenticate('jwt', { session: false }), wrap(async (req, res, next) => {
+  await db.Album.update(req.body, {
+    where: {
+      id: req.params.id
+    }
+  })
+
+  let album = await db.Album.findByPk(req.params.id)
 
   return res.json(album)
 }))

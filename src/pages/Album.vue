@@ -41,29 +41,35 @@
 
         <q-toolbar-title></q-toolbar-title>
 
-        <q-btn flat round dense @click="$refs.albumEditor.open()">
-          <q-icon name="add_to_photos"></q-icon>
-        </q-btn>
+        <div v-if="$store.getters['users/isLoggedIn']">
+          <q-btn flat round dense @click="$refs.albumEditor.open()">
+            <q-icon name="add_to_photos"></q-icon>
+          </q-btn>
 
-        <q-btn v-if="album" flat round dense @click="$refs.confirmDeleteAlbum.open()">
-          <q-icon name="delete"></q-icon>
-        </q-btn>
+          <q-btn flat round dense @click="$refs.albumEditor.open(album)">
+            <q-icon name="edit"></q-icon>
+          </q-btn>
 
-        <q-btn flat round dense icon="more_vert" v-if="selectMode">
-          <q-menu>
-            <q-list style="min-width: 150px">
-              <q-item clickable v-close-popup>
-                <q-item-section @click="$refs.mediaEditor.open()">Edit</q-item-section>
-              </q-item>
-              <q-item clickable v-close-popup>
-                <q-item-section @click="$refs.albumSelector.open()">Add to album...</q-item-section>
-              </q-item>
-              <q-item clickable v-close-popup v-if="!!album">
-                <q-item-section @click="$refs.confirmRemoveImages.open()">Remove from album</q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
+          <q-btn v-if="album" flat round dense @click="$refs.confirmDeleteAlbum.open()">
+            <q-icon name="delete"></q-icon>
+          </q-btn>
+
+          <q-btn flat round dense icon="more_vert" v-if="selectMode">
+            <q-menu>
+              <q-list style="min-width: 150px">
+                <q-item clickable v-close-popup>
+                  <q-item-section @click="$refs.mediaEditor.open()">Edit</q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup>
+                  <q-item-section @click="$refs.albumSelector.open()">Add to album...</q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup v-if="!!album">
+                  <q-item-section @click="$refs.confirmRemoveImages.open()">Remove from album</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </div>
       </q-toolbar>
     </q-page-sticky>
   </q-page>
