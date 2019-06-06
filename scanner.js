@@ -127,15 +127,27 @@ class Scanner {
 
   async getVideoInformation (filepath) {
     return new Promise((resolve, reject) => {
-      ffmpeg.ffprobe(filepath, (err, metadata) => {
+      ffmpeg.ffprobe(fs.createReadStream(filepath), (err, metadata) => {
         if (err) {
           return reject(err)
         }
 
-        return resolve({
-          width: metadata.streams[0].width,
-          height: metadata.streams[0].height
-        })
+        let videoStream = null
+        for (let stream of metadata.streams) {
+          if (stream.codec_type === 'video') {
+            videoStream = stream
+            break
+          }
+        }
+
+        if (videoStream) {
+          return resolve({
+            width: videoStream.width,
+            height: videoStream.height
+          })
+        }
+
+        return reject(`No video stream found in file ${filepath}`)
       })
     })
   }
