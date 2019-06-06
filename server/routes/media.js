@@ -5,17 +5,14 @@ const wrap = require('../middleware/routeWrapper')
 const passport = require('passport')
 
 router.get('/', wrap(async (req, res, next) => {
-  let where = {}
-  if (!req.user) {
-    where.public = 1
-  }
-
   let limit = 50
   return res.json(await db.Media.findAll({
     limit: limit,
     offset: req.query.offset || 0,
     order: db.Media.buildOrderQuery(req.query.sortMode, req.query.order),
-    where: where,
+    where: {
+      ...!req.user && { public: 1 }
+    },
     include: {
       model: db.Tag,
       as: 'tags',
@@ -26,16 +23,12 @@ router.get('/', wrap(async (req, res, next) => {
 
 router.get('/:ids', wrap(async (req, res, next) => {
   let ids = req.params.ids.split(',')
-  let where = {
-    id: ids
-  }
-
-  if (!req.user) {
-    where.public = 1
-  }
 
   let media = await db.Media.findAll({
-    where: where,
+    where: {
+      id: ids,
+      ...!req.user && { public: 1 }
+    },
     include: [{
       model: db.Tag,
       as: 'tags',

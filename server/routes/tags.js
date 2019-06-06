@@ -44,10 +44,8 @@ router.get('/:id/media', wrap(async (req, res, next) => {
     where: where
   })
 
-  delete where.id
-
-  if (!req.user) {
-    where.public = 1
+  where = {
+    ...!req.user && { public: 1 }
   }
 
   let media = await tag.getMedia({
