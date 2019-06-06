@@ -26,26 +26,56 @@ class Scanner {
     this.folderIds = new Set()
 
     for (let dir of paths) {
+      if (!dir) {
+        continue
+      }
+
       let files = this.walk(dir)
 
       for (let file of files) {
-        let mimetype = await db.Media.getMIMEType(file)
+        console.log(`SCANNING file ${file}`)
 
-        console.log(`SCANNING file ${file} with MIMETYPE ${mimetype}`)
+        let stat = fs.statSync(file)
+        let media = await db.Media.findOne({
+          where: {
+            path: file
+          }
+        })
 
-        let media = null
-        try {
-          if (mimetype.match(/image\/(?:png|jpg|jpeg|gif)/)) {
-            media = await this.processImage(file, mimetype)
-          } else if (mimetype.match(/video\//)) {
-            media = await this.processVideo(file, mimetype)
-          } else {
-            console.log(`Invalid file type: ${mimetype}`)
+        if (media && media.size === stat.size && media.lastModified.toString() === (new Date(stat.mtime).toString())) {
+          // If size and modtime are the same, it hasn't changed since the last scan
+        } else {
+          // Remove thumbnail if it exists and the photo was updated
+          if (media && fs.existsSync(media.getThumbnailPath())) {
+            fs.unlinkSync(media.getThumbnailPath())
+          }
+
+          let mimetype = await db.Media.getMIMEType(file)
+          let mediaInfo = {}
+
+          try {
+            if (mimetype.match(/image\/(?:png|jpg|jpeg|gif)/)) {
+              mediaInfo = await this.getImageInformation(file)
+            } else if (mimetype.match(/video\//)) {
+              mediaInfo = await this.getVideoInformation(file)
+            } else {
+              console.log(`Invalid file type: ${mimetype}`)
+              continue
+            }
+
+            media = await db.Media.create({
+              ...mediaInfo,
+              path: file,
+              name: path.basename(file, path.extname(file)),
+              size: stat.size,
+              mimetype: mimetype,
+              checksum: this.getFileMd5(file),
+              lastModified: new Date(stat.mtime)
+            })
+          } catch (err) {
+            console.log(`FAILED to scan file ${file}: `, err.message)
             continue
           }
-        } catch (err) {
-          console.log(`FAILED to scan file ${file}: `, err.message)
-          continue
         }
 
         this.mediaCache.add(media.id)
@@ -95,50 +125,6 @@ class Scanner {
     this.running = false
   }
 
-  async processImage (file, mimetype) {
-    let photo = await db.Media.findOne({
-      where: {
-        path: file
-      }
-    })
-
-    let stat = fs.statSync(file)
-    if (photo && photo.size === stat.size && photo.lastModified.toString() === (new Date(stat.mtime).toString())) {
-      return photo
-    }
-
-    // Remove thumbnail if it exists and the photo was updated
-    if (photo && fs.existsSync(photo.getThumbnailPath())) {
-      fs.unlinkSync(photo.getThumbnailPath())
-    }
-
-    let imageInfo = await this.getImageInformation(file)
-    if (!photo) {
-      photo = await db.Media.create({
-        ...imageInfo,
-        size: stat.size,
-        mimetype: mimetype,
-        lastModified: new Date(stat.mtime)
-      })
-    }
-
-    return photo
-  }
-
-  async processVideo (file, mimetype) {
-    let video = await db.Media.findOne({
-      where: {
-        path: file
-      }
-    })
-
-    if (!video) {
-      video = await db.Media.create({ ...await this.getVideoInformation(file), mimetype: mimetype })
-    }
-
-    return video
-  }
-
   async getVideoInformation (filepath) {
     return new Promise((resolve, reject) => {
       ffmpeg.ffprobe(filepath, (err, metadata) => {
@@ -147,12 +133,8 @@ class Scanner {
         }
 
         return resolve({
-          path: filepath,
-          name: path.basename(filepath, path.extname(filepath)),
-          size: metadata.format.size,
           width: metadata.streams[0].width,
-          height: metadata.streams[0].height,
-          checksum: this.getFileMd5(filepath)
+          height: metadata.streams[0].height
         })
       })
     })
@@ -162,11 +144,8 @@ class Scanner {
     let imageInfo = await sharp(filepath).metadata()
 
     return {
-      path: filepath,
-      name: path.basename(filepath, path.extname(filepath)),
       width: imageInfo.width,
-      height: imageInfo.height,
-      checksum: this.getFileMd5(filepath)
+      height: imageInfo.height
     }
   }
 
