@@ -30,8 +30,12 @@ class Socket {
         }
       })
       this.emit('scan', 'Starting library scan...')
-      await libraryScanner.run(path.value.split('\n'))
-      this.emit('scan', 'Scan completed!')
+      try {
+        await libraryScanner.run(path.value.split('\n'))
+        this.emit('scan', 'Scan completed!')
+      } catch (err) {
+        this.emit('scan', err.message)
+      }
     }
   }
 }
