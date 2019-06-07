@@ -50,7 +50,6 @@ import TopLevelNav from '../components/TopLevelNav'
 import SortNav from '../components/SortNav'
 
 import GridViewWatcher from '../mixins/GridViewWatcher'
-import SortableMedia from '../mixins/SortableMedia'
 
 export default {
   name: 'PageIndex',
@@ -64,8 +63,7 @@ export default {
   },
 
   mixins: [
-    GridViewWatcher,
-    SortableMedia
+    GridViewWatcher
   ],
 
   data () {
@@ -85,16 +83,16 @@ export default {
     },
 
     sort (config) {
-      this.setSortConfig(config)
       this.media = []
+      console.log(this.$store.getters['media/sortOrder'])
       this.getData()
     },
 
     async getData (index, done) {
       let query = {
         offset: this.media.length,
-        sortMode: this.sortMode,
-        order: this.sortOrder
+        sortMode: this.$store.getters['media/sortMode'],
+        order: this.$store.getters['media/sortOrder']
       }
       query = Object.keys(query).map((key, i) => `${key}=${query[key]}`).join('&')
 

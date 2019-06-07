@@ -156,7 +156,6 @@ export default {
     },
 
     async submit () {
-      console.log(this.isPublic)
       let tags = []
       for (let tag of this.selectedTags) {
         tags.push(tag.value)

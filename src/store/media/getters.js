@@ -21,3 +21,11 @@ export function getPrevious (state) {
 
   return state.media[state.index - 1]
 }
+
+export function sortMode (state) {
+  return state.sortMode
+}
+
+export function sortOrder (state) {
+  return state.sortOrder
+}

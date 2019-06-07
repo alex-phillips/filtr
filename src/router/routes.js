@@ -16,7 +16,7 @@ const routes = [
   },
   {
     path: '/media/:id',
-    component: () => import('layouts/EmptyLayout.vue'),
+    component: () => import('layouts/MediaViewerLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Media.vue') }
     ]

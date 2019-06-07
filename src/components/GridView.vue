@@ -13,6 +13,9 @@
             v-lazy:background="`${$config.server.base_url}/media/${album.previewId}/thumbnail`"
             spinner-color="primary"
           >
+            <div class="absolute-bottom text-subtitle1 text-center q-pa-xs">
+              {{ album.name }}
+            </div>
             <template v-slot:error>
               <div class="absolute-full flex flex-center text-white">
                 No image available
@@ -41,6 +44,12 @@
               left: `${layoutBoxes[index].left}px`,
             }"
           >
+            <div v-if="media[index].selected" class="icon-overlay absolute-top-left text-subtitle2 text-warning">
+              <q-icon name="check_circle" class="cursor-pointer"/>
+            </div>
+            <div v-if="media[index].mimetype.match(/video\//)" class="icon-overlay absolute-full text-subtitle2 flex flex-center">
+              <q-icon name="play_arrow" class="cursor-pointer"/>
+            </div>
             <template v-slot:error>
               <div class="absolute-full flex flex-center bg-negative text-white">
                 Cannot load image
@@ -212,11 +221,16 @@ export default {
 }
 </script>
 
-<style>
+<style lang="stylus">
 .grid-container {
   position: relative;
   padding-top: 50px;
   width: 100%;
+
+  -webkit-user-select: none; /* Safari 3.1+ */
+  -moz-user-select: none; /* Firefox 2+ */
+  -ms-user-select: none; /* IE 10+ */
+  user-select: none; /* Standard syntax */
 }
 
 .justified-layout-container {
@@ -226,8 +240,8 @@ export default {
 
 .album-preview {
   border: 1px solid black;
-  width: 140px;
-  height: 140px;
+  width: 200px;
+  height: 200px;
   background-size: cover !important;
   background-position: 50% 50% !important;
 }
@@ -237,9 +251,17 @@ export default {
   border: 1px solid black;
   background-size: cover !important;
   background-position: 50% 50% !important;
+
+  .icon-overlay {
+    background: rgba(0, 0, 0, 0) !important;
+  }
+
+  .q-icon {
+    font-size: 3em;
+  }
 }
 
 .selected {
-  border: red 5px solid
+  border: $warning 5px solid
 }
 </style>

@@ -34,6 +34,12 @@ export default {
     }
   },
 
+  created () {
+    this.current = this.$store.getters['media/sortMode']
+    this.desc = this.$store.getters['media/sortOrder'] === 'desc'
+    this.currentLabel = this.config[this.current]
+  },
+
   methods: {
     sortBy (mode) {
       if (mode === this.current) {
@@ -44,10 +50,10 @@ export default {
         this.desc = true
       }
 
-      this.$emit('sort', {
-        mode: this.current,
-        order: this.desc === true ? 'desc' : 'asc'
-      })
+      this.$store.commit('media/setSortMode', this.current)
+      this.$store.commit('media/setSortOrder', this.desc)
+
+      this.$emit('sort')
     }
   }
 }
