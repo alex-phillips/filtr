@@ -45,7 +45,7 @@ export default {
       ]
 
       let rootFolders = this.$store.getters['folders/rootFolders']
-      if (rootFolders.length > 0) {
+      if (this.$store.getters['users/isLoggedIn'] && rootFolders.length > 0) {
         nav.push({
           name: 'Folders',
           route: `/folders/${rootFolders[0].id}`
