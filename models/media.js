@@ -26,6 +26,11 @@ const ffmpeg = require('fluent-ffmpeg')
 const mmmagic = require('mmmagic')
 const Magic = require('mmmagic').Magic
 
+/**
+ * To spawn child processes for things like ffprobe
+ */
+const childProcess = require('child_process')
+
 class Media extends Sequelize.Model {
   static init (sequelize, DataTypes) {
     return super.init({
@@ -112,6 +117,32 @@ class Media extends Sequelize.Model {
     }
 
     return thumbnail
+  }
+
+  probeVideo () {
+    let args = [
+      '-v', '0',
+      '-print_format', 'json',
+      '-show_format',
+      '-show_streams',
+      this.path
+    ]
+
+    // Startup is a LOT quicker with the previous args, but this set MIGHT get is keyframes?
+    // Might not be necessary since we're transcoding anyway though
+    // var args = [
+    //   '-i', this.path, '-show_frames',
+    //   '-skip_frame', 'nokey',
+    //   '-select_streams', 'v',
+    //   '-show_entries',
+    //   'frame=pkt_dts_time', // 'frame=pkt_pts_time' works for everything except avi
+    //   '-print_format', 'json',
+    //   '-show_format'
+    // ]
+
+    let probeChild = childProcess.spawnSync('ffprobe', args)
+
+    return probeChild.stdout.toString()
   }
 
   toJSON () {
