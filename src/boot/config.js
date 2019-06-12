@@ -1,5 +1,9 @@
 import config from '../../config/app.json'
 
 export default async ({ Vue }) => {
-  Vue.prototype.$config = config[process.env.NODE_ENV || 'development']
+  if (process.env.DEV) {
+    Vue.prototype.$config = config.development
+  } else {
+    Vue.prototype.$config = config.production
+  }
 }
