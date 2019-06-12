@@ -5,6 +5,7 @@ const wrap = require('../middleware/routeWrapper')
 const passport = require('passport')
 const fs = require('fs')
 const childProcess = require('child_process')
+const config = require('../../config/app.json')[process.env.NODE_ENV || 'development']
 
 router.get('/', wrap(async (req, res, next) => {
   let limit = 50
@@ -98,7 +99,7 @@ router.get('/:id/playlist.m3u8', wrap(async (req, res, next) => {
       for (var t = 0; t < info.format.duration; t += tsDuration) {
         var currDuration = Math.min(tsDuration, info.format.duration - t)
         res.write('#EXTINF:' + currDuration + ',\n')
-        res.write(`/media/${media.id}/segment/${t}/${currDuration}\n`)
+        res.write(`${config.server.base_url}/media/${media.id}/segment/${t}/${currDuration}\n`)
       }
       res.write('#EXT-X-ENDLIST\n')
     }

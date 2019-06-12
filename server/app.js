@@ -9,8 +9,8 @@ const express = require('express')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const path = require('path')
-const db = require('../models/index')
 const auth = require('./middleware/auth')
+const config = require('../config/app.json')[process.env.NODE_ENV || 'development']
 
 const app = express()
 
@@ -18,10 +18,16 @@ app.use(express.json())
 app.use(express.urlencoded({
   extended: false
 }))
-app.use(cors({
-  // origin: 'http://localhost:8080',
+
+const corsOpts = {
   credentials: true
-}))
+}
+
+if (config.client.base_url) {
+  corsOpts.origin = config.client.base_url
+}
+
+app.use(cors(corsOpts))
 app.use(cookieParser())
 
 /**

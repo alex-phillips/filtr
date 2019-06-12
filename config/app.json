@@ -1,0 +1,18 @@
+{
+  "development": {
+    "client": {
+      "base_url": "http://localhost:8080"
+    },
+    "server": {
+      "base_url": "http://localhost:3000"
+    }
+  },
+  "production": {
+    "client": {
+      "base_url": ""
+    },
+    "server": {
+      "base_url": ""
+    }
+  }
+}
