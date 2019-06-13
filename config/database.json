@@ -12,6 +12,7 @@
   },
   "production": {
     "storage": "db.sqlite",
-    "dialect": "sqlite"
+    "dialect": "sqlite",
+    "logging": false
   }
 }
