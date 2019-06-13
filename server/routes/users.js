@@ -42,10 +42,14 @@ router.put('/', wrap(async (req, res, next) => {
     return res.status(403).json([])
   }
 
-  if (!req.user.verifyPassword(req.body.currentPassword)) {
-    return res.status(400).json({
-      message: 'Incorrect password'
-    })
+  if (req.body.currentPassword) {
+    if (!req.user.verifyPassword(req.body.currentPassword)) {
+      return res.status(400).json({
+        message: 'Incorrect password'
+      })
+    }
+  } else {
+    delete req.body.password
   }
 
   await req.user.update(req.body)
