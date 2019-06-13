@@ -2,11 +2,18 @@
   <div class="row justify-center">
     <div class="col-md-8 col-xs-11">
       <h4>Account</h4>
-      <h5 class="text-grey-6">Change Password</h5>
-       <q-form
-         @submit="submit"
-         class="q-gutter-md"
-       >
+      <q-form
+        @submit="submit"
+        class="q-gutter-md"
+      >
+        <q-input
+          v-model="email"
+          label="E-mail"
+          type="text"
+        />
+
+        <h5 class="text-grey-6">Change Password</h5>
+
         <q-input
           v-model="currentPassword"
           label="Current Password"
@@ -35,15 +42,20 @@
 export default {
   data () {
     return {
+      email: '',
       currentPassword: '',
       password1: '',
       password2: ''
     }
   },
 
+  created () {
+    this.email = this.$store.getters['users/getUser'].email
+  },
+
   methods: {
     async submit () {
-      if (!this.currentPassword || !this.password1 || !this.password2) {
+      if (!this.currentPassword && this.password1 && this.password2) {
         return this.$q.notify({
           color: 'red-5',
           textColor: 'white',
@@ -52,7 +64,7 @@ export default {
         })
       }
 
-      if (this.password1 !== this.password2) {
+      if ((this.password1 || this.password2) && this.password1 !== this.password2) {
         return this.$q.notify({
           color: 'red-5',
           textColor: 'white',
