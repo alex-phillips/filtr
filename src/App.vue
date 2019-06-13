@@ -22,8 +22,8 @@ export default {
   methods: {
     async initialize () {
       try {
-        let user = await this.$axios.get(`${this.$config.server.base_url}/ping`)
-        this.$store.commit('users/setUser', user)
+        let response = await this.$axios.get(`${this.$config.server.base_url}/ping`)
+        this.$store.commit('users/setUser', response.data)
       } catch (e) {
         this.$store.commit('users/logout')
       }
