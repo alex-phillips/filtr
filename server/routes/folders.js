@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const db = require('../../models/index')
+const { Media, Folder } = require('../../models/index')
 const wrap = require('../middleware/routeWrapper')
 const passport = require('passport')
 
@@ -13,7 +13,7 @@ router.get('/', passport.authenticate('jwt', { session: false }), wrap(async (re
     filter = JSON.parse(req.query.filter)
   } catch (e) {}
 
-  let folders = await db.Folder.findAll({
+  let folders = await Folder.findAll({
     where: filter
   })
 
@@ -24,13 +24,13 @@ router.get('/', passport.authenticate('jwt', { session: false }), wrap(async (re
  * Get a folder's media
  */
 router.get('/:id/media', passport.authenticate('jwt', { session: false }), wrap(async (req, res, next) => {
-  let media = await db.Media.findAll({
+  let media = await Media.findAll({
     where: {
       folderId: req.params.id
     },
     limit: 50,
     offset: req.query.offset || 0,
-    order: db.Media.buildOrderQuery(req.query.sortMode, req.query.order)
+    order: Media.buildOrderQuery(req.query.sortMode, req.query.order)
   })
 
   return res.json(media)

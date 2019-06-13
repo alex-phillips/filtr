@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const db = require('../../models/index')
+const { Media, Tag } = require('../../models/index')
 const wrap = require('../middleware/routeWrapper')
 const passport = require('passport')
 const fs = require('fs')
@@ -9,15 +9,15 @@ const config = require('../../config/app.json')[process.env.NODE_ENV || 'develop
 
 router.get('/', wrap(async (req, res, next) => {
   let limit = 50
-  return res.json(await db.Media.findAll({
+  return res.json(await Media.findAll({
     limit: limit,
     offset: req.query.offset || 0,
-    order: db.Media.buildOrderQuery(req.query.sortMode, req.query.order),
+    order: Media.buildOrderQuery(req.query.sortMode, req.query.order),
     where: {
       ...!req.user && { public: 1 }
     },
     include: {
-      model: db.Tag,
+      model: Tag,
       as: 'tags',
       attributes: ['id', 'name']
     }
@@ -27,13 +27,13 @@ router.get('/', wrap(async (req, res, next) => {
 router.get('/:ids', wrap(async (req, res, next) => {
   let ids = req.params.ids.split(',')
 
-  let media = await db.Media.findAll({
+  let media = await Media.findAll({
     where: {
       id: ids,
       ...!req.user && { public: 1 }
     },
     include: [{
-      model: db.Tag,
+      model: Tag,
       as: 'tags',
       attributes: ['id', 'name']
     }]
@@ -51,7 +51,7 @@ router.get('/:ids', wrap(async (req, res, next) => {
 }))
 
 router.get('/:id/original', wrap(async (req, res, next) => {
-  let media = await db.Media.findOne({
+  let media = await Media.findOne({
     where: {
       id: req.params.id
     }
@@ -65,7 +65,7 @@ router.get('/:id/original', wrap(async (req, res, next) => {
 }))
 
 router.get('/:id/playlist.m3u8', wrap(async (req, res, next) => {
-  let media = await db.Media.findOne({
+  let media = await Media.findOne({
     where: {
       id: req.params.id
     }
@@ -112,7 +112,7 @@ router.get('/:id/playlist.m3u8', wrap(async (req, res, next) => {
 
 router.get('/:id/segment/:start/:duration', wrap(async (req, res, next) => {
   console.log('segment request')
-  let media = await db.Media.findOne({
+  let media = await Media.findOne({
     where: {
       id: req.params.id
     }
@@ -201,7 +201,7 @@ router.get('/:id/segment/:start/:duration', wrap(async (req, res, next) => {
 }))
 
 router.get('/:id/thumbnail', wrap(async (req, res, next) => {
-  let media = await db.Media.findOne({
+  let media = await Media.findOne({
     where: {
       id: req.params.id
     }
@@ -225,19 +225,19 @@ router.put('/:ids', passport.authenticate('jwt', { session: false }), wrap(async
   let ids = req.params.ids.split(',')
 
   for (let id of ids) {
-    await db.Media.update(req.body, {
+    await Media.update(req.body, {
       where: {
         id: ids
       }
     })
 
-    let media = await db.Media.findOne({
+    let media = await Media.findOne({
       where: {
         id: id
       },
       include: [
         {
-          model: db.Tag,
+          model: Tag,
           as: 'tags'
         }
       ]
@@ -252,13 +252,13 @@ router.put('/:ids', passport.authenticate('jwt', { session: false }), wrap(async
         await media.addTags(req.body.tags)
       }
 
-      media = await db.Media.findOne({
+      media = await Media.findOne({
         where: {
           id: id
         },
         include: [
           {
-            model: db.Tag,
+            model: Tag,
             as: 'tags'
           }
         ]

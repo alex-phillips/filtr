@@ -1,7 +1,7 @@
 process.chdir(__dirname)
 
 require('./bootstrap')
-const db = require('./models/index')
+const { Media, Folder } = require('./models/index')
 const fs = require('fs')
 const crypto = require('crypto')
 const path = require('path')
@@ -36,7 +36,7 @@ class Scanner {
         console.log(`SCANNING file ${file}`)
 
         let stat = fs.statSync(file)
-        let media = await db.Media.findOne({
+        let media = await Media.findOne({
           where: {
             path: file
           }
@@ -50,7 +50,7 @@ class Scanner {
             fs.unlinkSync(media.getThumbnailPath())
           }
 
-          let mimetype = await db.Media.getMIMEType(file)
+          let mimetype = await Media.getMIMEType(file)
           let mediaInfo = {}
 
           try {
@@ -63,7 +63,7 @@ class Scanner {
               continue
             }
 
-            media = await db.Media.create({
+            media = await Media.create({
               ...mediaInfo,
               path: file,
               name: path.basename(file, path.extname(file)),
@@ -91,7 +91,7 @@ class Scanner {
         let parent = null
         for (let dir of dirpath.split('/').filter(p => p !== '')) {
           let parentId = parent !== null ? parent.id : null
-          parent = (await db.Folder.findOrCreate({
+          parent = (await Folder.findOrCreate({
             where: {
               name: dir,
               parentId: parentId
@@ -106,7 +106,7 @@ class Scanner {
       }
     }
 
-    await db.Folder.destroy({
+    await Folder.destroy({
       where: {
         id: {
           [Op.notIn]: [...this.folderIds]
@@ -114,7 +114,7 @@ class Scanner {
       }
     })
 
-    await db.Media.destroy({
+    await Media.destroy({
       where: {
         id: {
           [Op.notIn]: [...this.mediaCache]

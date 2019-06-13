@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const db = require('../../models/index')
+const { User } = require('../../models/index')
 const wrap = require('../middleware/routeWrapper')
 
 router.get('/', wrap(async (req, res, next) => {
@@ -8,18 +8,18 @@ router.get('/', wrap(async (req, res, next) => {
     return res.status(403).json([])
   }
 
-  return res.json(await db.User.findAll())
+  return res.json(await User.findAll())
 }))
 
 router.post('/', wrap(async (req, res, next) => {
-  let users = await db.User.findAll()
+  let users = await User.findAll()
 
   // Do we want to prevent user registration unless logged in?
   if (users.length !== 0 && !req.user) {
     return res.status(403).json([])
   }
 
-  let existing = await db.User.findOne({
+  let existing = await User.findOne({
     where: {
       email: req.body.email
     }
@@ -32,7 +32,7 @@ router.post('/', wrap(async (req, res, next) => {
     })
   }
 
-  let user = await db.User.create(req.body)
+  let user = await User.create(req.body)
 
   return res.json(user)
 }))

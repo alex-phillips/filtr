@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const path = require('path')
-const db = require('../../models/index')
+const { Album, Media, Tag, Config } = require('../../models/index')
 const wrap = require('../middleware/routeWrapper')
 const { Op } = require('sequelize')
 const jwt = require('jsonwebtoken')
@@ -44,20 +44,20 @@ router.get('/ping', passport.authenticate('jwt', { session: false }), wrap(async
 }))
 
 router.get('/config', wrap(async (req, res, next) => {
-  res.json(await db.Config.findAll())
+  res.json(await Config.findAll())
 }))
 
 router.post('/config', passport.authenticate('jwt', { session: false }), wrap(async (req, res, next) => {
   let retval = []
   for (let key in req.body) {
-    let config = await db.Config.findOne({
+    let config = await Config.findOne({
       where: {
         name: key
       }
     })
 
     if (!config) {
-      config = await db.Config.create({
+      config = await Config.create({
         name: key,
         value: req.body[key]
       })
@@ -75,7 +75,7 @@ router.post('/config', passport.authenticate('jwt', { session: false }), wrap(as
 
 router.put('/config', passport.authenticate('jwt', { session: false }), wrap(async (req, res, next) => {
   for (let key in req.body) {
-    await db.Config.update({
+    await Config.update({
       value: req.body[key]
     }, {
       where: {
@@ -84,7 +84,7 @@ router.put('/config', passport.authenticate('jwt', { session: false }), wrap(asy
     })
   }
 
-  return res.json(await db.Config.findAll())
+  return res.json(await Config.findAll())
 }))
 
 router.get('/search', wrap(async (req, res, next) => {
@@ -96,7 +96,7 @@ router.get('/search', wrap(async (req, res, next) => {
   let terms = req.query.query.split(' ')
 
   for (let term of terms) {
-    retval.media = retval.media.concat(await db.Media.findAll({
+    retval.media = retval.media.concat(await Media.findAll({
       where: {
         [Op.or]: [
           {
@@ -113,7 +113,7 @@ router.get('/search', wrap(async (req, res, next) => {
       }
     }))
 
-    let tags = await db.Tag.findAll({
+    let tags = await Tag.findAll({
       where: {
         name: {
           [Op.like]: `%${term}%`
@@ -124,7 +124,7 @@ router.get('/search', wrap(async (req, res, next) => {
       retval.media = retval.media.concat(await tag.getMedia())
     }
 
-    retval.albums = retval.albums.concat(await db.Album.findAll({
+    retval.albums = retval.albums.concat(await Album.findAll({
       where: {
         [Op.or]: [
           {

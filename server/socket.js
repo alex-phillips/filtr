@@ -1,5 +1,5 @@
 const Scanner = require('../scanner')
-const db = require('../models/index')
+const { Config } = require('../models/index')
 
 const libraryScanner = new Scanner()
 
@@ -24,7 +24,7 @@ class Socket {
     if (libraryScanner.isRunning() === true) {
       this.emit('scan', 'Scan already in progress')
     } else {
-      let path = await db.Config.findOne({
+      let path = await Config.findOne({
         where: {
           name: 'path'
         }
