@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div
+    v-touch-swipe.mouse.left="goToNext"
+    v-touch-swipe.mouse.right="goToPrevious"
+  >
     <info-drawer
       v-if="media.id"
       :media="media"
@@ -8,26 +11,19 @@
     ></info-drawer>
 
     <q-page>
-      <img class="media" :class="[ isZoomed ? '' : 'media-fit']" :src="src" contain v-if="media.mimetype && media.mimetype.match(/image\//)"/>
+      <img class="media" class="media-fit" :src="src" contain v-if="media.mimetype && media.mimetype.match(/image\//)"/>
       <video-player :options="videoOptions"
         class="media"
         v-if="media.mimetype && media.mimetype.match(/video\//)"
         style="width: 100%; height: 100%;"
       />
 
-      <div
-        id="swipe-overlay-handler"
-        v-if="!isZoomed"
-        v-touch-swipe.mouse.left="goToNext"
-        v-touch-swipe.mouse.right="goToPrevious"
-      ></div>
-
       <q-page-sticky position="bottom-right" :offset="[18, 18]">
         <q-btn fab icon="info" color="primary" @click="infoDrawerOpen = !infoDrawerOpen"/>
       </q-page-sticky>
 
       <q-page-sticky position="bottom-right" :offset="[18, 85]" v-if="media.mimetype && media.mimetype.match(/image\//)">
-        <q-btn fab :icon="isZoomed ? 'zoom_out' : 'zoom_in'" color="primary" @click="toggleZoom"/>
+        <q-btn fab icon="zoom_in" color="primary" @click="toggleZoom"/>
       </q-page-sticky>
     </q-page>
   </div>
@@ -49,7 +45,6 @@ export default {
       media: {
         type: null
       },
-      isZoomed: false,
       src: `${this.$config.server.base_url}/media/${this.$route.params.id}/original`,
       vidsrc: `${this.$config.server.base_url}/media/${this.$route.params.id}/playlist.m3u8`,
       videoOptions: {
@@ -81,10 +76,7 @@ export default {
 
   methods: {
     toggleZoom () {
-      this.isZoomed = !this.isZoomed
-      if (this.isZoomed) {
-        this.infoDrawerOpen = false
-      }
+      window.location.href = this.src
     },
 
     mediaUpdated (media) {
@@ -106,10 +98,6 @@ export default {
     },
 
     goToNext () {
-      if (this.isZoomed) {
-        return
-      }
-
       this.transition = 'slide-left'
 
       let index = this.$store.getters['media/getIndex']
@@ -124,10 +112,6 @@ export default {
     },
 
     goToPrevious () {
-      if (this.isZoomed) {
-        return
-      }
-
       this.transition = 'slide-right'
 
       let index = this.$store.getters['media/getIndex']
