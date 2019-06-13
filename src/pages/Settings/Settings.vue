@@ -3,10 +3,18 @@
     <div class="col-md-8 col-xs-11">
       <h4>Settings</h4>
       <h5 class="text-grey-6">Media Paths</h5>
-      <q-input
-        v-model="config.path"
-        type="textarea"
-      />
+      <q-form
+        @submit="submit"
+       class="q-gutter-md"
+      >
+        <q-input
+          v-model="config.path"
+          type="textarea"
+        />
+        <div>
+          <q-btn label="Submit" type="submit" color="primary"/>
+        </div>
+      </q-form>
     </div>
   </div>
 </template>
