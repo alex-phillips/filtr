@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div
+    v-touch-swipe.mouse.left="goToNext"
+    v-touch-swipe.mouse.right="goToPrevious"
+  >
     <info-drawer
       v-if="media.id"
       :media="media"
@@ -64,6 +67,14 @@ export default {
     this.media = response.data
   },
 
+  mounted () {
+    window.addEventListener('keyup', this.onKeypress, false)
+  },
+
+  beforeDestroy () {
+    window.removeEventListener('keyup', this.onKeypress, false)
+  },
+
   methods: {
     toggleZoom () {
       this.isZoomed = !this.isZoomed
@@ -74,6 +85,56 @@ export default {
 
     mediaUpdated (media) {
       this.media = media
+    },
+
+    onKeypress (e) {
+      switch (e.keyCode) {
+        case 39:
+          this.goToNext()
+          break
+        case 37:
+          this.goToPrevious()
+          break
+        case 27:
+          this.$router.go(-1)
+          break
+      }
+    },
+
+    goToNext () {
+      if (this.isZoomed) {
+        return
+      }
+
+      this.transition = 'slide-left'
+
+      let index = this.$store.getters['media/getIndex']
+
+      let media = this.$store.getters['media/getNext']
+      index += 1
+
+      if (media) {
+        this.$store.commit('media/setIndex', index)
+        this.$router.replace(media.url)
+      }
+    },
+
+    goToPrevious () {
+      if (this.isZoomed) {
+        return
+      }
+
+      this.transition = 'slide-right'
+
+      let index = this.$store.getters['media/getIndex']
+
+      let media = this.$store.getters['media/getPrevious']
+      index -= 1
+
+      if (media) {
+        this.$store.commit('media/setIndex', index)
+        this.$router.replace(media.url)
+      }
     }
   }
 }
