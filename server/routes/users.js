@@ -49,6 +49,7 @@ router.put('/', wrap(async (req, res, next) => {
       })
     }
   } else {
+    // If we didn't pass up the current password, don't submit a new password
     delete req.body.password
   }
 
