@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const path = require('path')
-const { Album, Media, Tag, Config } = require('../../models/index')
+const { Album, Media, Tag, Config, User } = require('../../models/index')
 const wrap = require('../middleware/routeWrapper')
 const { Op } = require('sequelize')
 const jwt = require('jsonwebtoken')
@@ -13,7 +13,7 @@ router.get('/', function (req, res, next) {
 })
 
 router.post('/login', wrap(async (req, res, next) => {
-  let user = await db.User.findOne({
+  let user = await User.findOne({
     where: {
       email: req.body.email
     }
