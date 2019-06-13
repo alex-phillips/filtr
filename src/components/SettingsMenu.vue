@@ -80,7 +80,7 @@ export default {
 
     logout () {
       this.$store.commit('users/logout')
-      this.$router.go('/')
+      this.$router.push('/')
     },
 
     itemSelected (item) {
