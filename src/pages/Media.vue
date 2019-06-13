@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-touch-swipe.mouse.left="goToNext"
-    v-touch-swipe.mouse.right="goToPrevious"
-  >
+  <div>
     <info-drawer
       v-if="media.id"
       :media="media"
@@ -17,6 +14,13 @@
         v-if="media.mimetype && media.mimetype.match(/video\//)"
         style="width: 100%; height: 100%;"
       />
+
+      <div
+        id="swipe-overlay-handler"
+        v-if="!isZoomed"
+        v-touch-swipe.mouse.left="goToNext"
+        v-touch-swipe.mouse.right="goToPrevious"
+      ></div>
 
       <q-page-sticky position="bottom-right" :offset="[18, 18]">
         <q-btn fab icon="info" color="primary" @click="infoDrawerOpen = !infoDrawerOpen"/>
@@ -155,5 +159,13 @@ export default {
   max-width: 100%;
   max-height: 100%;
   margin: auto;
+}
+
+#swipe-overlay-handler {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 </style>
