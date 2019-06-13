@@ -41,12 +41,6 @@ export default {
     }
   },
 
-  created () {
-    for (let config of this.$store.getters['config/getConfig']) {
-      this.config[config.name] = config.value
-    }
-  },
-
   methods: {
     async submit () {
       if (!this.currentPassword || !this.password1 || !this.password2) {
