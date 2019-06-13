@@ -101,7 +101,6 @@ export default {
       this.transition = 'slide-left'
 
       let index = this.$store.getters['media/getIndex']
-
       let media = this.$store.getters['media/getNext']
       index += 1
 
@@ -115,9 +114,10 @@ export default {
       this.transition = 'slide-right'
 
       let index = this.$store.getters['media/getIndex']
-
       let media = this.$store.getters['media/getPrevious']
       index -= 1
+
+      console.log(media)
 
       if (media) {
         this.$store.commit('media/setIndex', index)
