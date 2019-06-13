@@ -12,9 +12,9 @@
 
     <q-page-sticky expand position="top">
       <q-toolbar class="bg-grey-3">
-        <top-level-nav></top-level-nav>
+        <top-level-nav v-if="selectedMedia.length === 0" ></top-level-nav>
 
-        <sort-nav @sort="sort"></sort-nav>
+        <sort-nav v-if="selectedMedia.length === 0" @sort="sort"></sort-nav>
 
         <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
           <q-icon name="close"></q-icon>DESELECT ALL
@@ -22,7 +22,7 @@
 
         <q-toolbar-title></q-toolbar-title>
 
-        <q-btn flat round dense icon="more_vert" v-if="selectMode">
+        <q-btn flat round dense icon="more_vert" v-if="selectMode && $store.getters['users/isLoggedIn']">
           <q-menu>
             <q-list style="min-width: 150px">
               <q-item clickable v-close-popup>

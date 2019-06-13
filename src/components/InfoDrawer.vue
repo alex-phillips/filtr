@@ -48,7 +48,7 @@
             @click="$router.push(tag.url)"
           >{{ tag.name }}</q-chip>
         </q-item>
-        <q-item clickable @click="$refs.mediaEditor.open()">
+        <q-item v-if="$store.getters['user/isLoggedIn']" clickable @click="$refs.mediaEditor.open()">
           <q-item-section avatar>
             <q-icon name="edit" />
           </q-item-section>
