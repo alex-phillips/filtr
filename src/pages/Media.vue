@@ -11,7 +11,7 @@
     ></info-drawer>
 
     <q-page>
-      <img class="media" class="media-fit" :src="src" contain v-if="media.mimetype && media.mimetype.match(/image\//)"/>
+      <img class="media media-fit" :src="src" contain v-if="media.mimetype && media.mimetype.match(/image\//)"/>
       <video-player :options="videoOptions"
         class="media"
         v-if="media.mimetype && media.mimetype.match(/video\//)"
