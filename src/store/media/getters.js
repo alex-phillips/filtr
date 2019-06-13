@@ -1,25 +1,40 @@
+import { Cookies } from 'quasar'
+
 export function getMedia (state) {
-  return state.albums
+  if (state.media.length === 0) {
+    return Cookies.get('media')
+  }
+
+  return state.media
 }
 
 export function getIndex (state) {
+  if (state.index === null) {
+    return Cookies.get('media-index')
+  }
+
   return state.index
 }
 
-export function getNext (state) {
-  if (state.index === state.media.length - 1) {
+export function getNext (state, getters) {
+  let media = getters.getMedia
+  let index = getters.getIndex
+  console.log('index: ', index)
+  if (index === media.length - 1) {
     return null
   }
 
-  return state.media[state.index + 1]
+  return media[index + 1]
 }
 
-export function getPrevious (state) {
-  if (state.index === 0) {
+export function getPrevious (state, getters) {
+  let media = getters.getMedia
+  let index = getters.getIndex
+  if (index === 0) {
     return null
   }
 
-  return state.media[state.index - 1]
+  return media[index - 1]
 }
 
 export function sortMode (state) {

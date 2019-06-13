@@ -1,6 +1,6 @@
 export default {
   media: [],
-  index: 0,
+  index: null,
   sortMode: 'date_added',
   sortOrder: 'desc'
 }
