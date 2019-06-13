@@ -71,7 +71,8 @@ module.exports = function (ctx) {
         'QTabs',
         'QTabPanel',
         'QTabPanels',
-        'QCheckbox'
+        'QCheckbox',
+        'QSplitter'
       ],
 
       directives: [

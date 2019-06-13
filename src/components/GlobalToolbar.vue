@@ -1,6 +1,5 @@
 <template>
   <div>
-    <settings ref="settings" v-if="$store.getters['users/isLoggedIn']"></settings>
     <login ref="login"></login>
 
     <q-header elevated>
@@ -68,13 +67,11 @@
 
 <script>
 import SettingsMenu from './SettingsMenu'
-import Settings from './dlg/Settings'
 import Login from './dlg/Login'
 
 export default {
   components: {
     SettingsMenu,
-    Settings,
     Login
   },
 
@@ -101,7 +98,7 @@ export default {
     menuItemSelected (item) {
       switch (item) {
         case 'settings':
-          this.$refs.settings.open()
+          this.$router.push('/settings')
           break
         case 'login':
           this.$refs.login.open()

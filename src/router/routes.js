@@ -55,6 +55,26 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Install.vue') }
     ]
+  },
+  {
+    path: '/settings',
+    component: () => import('layouts/MyLayout.vue'),
+    children: [
+      {
+        path: '',
+        component: () => import('layouts/Settings.vue'),
+        children: [
+          {
+            path: '',
+            component: () => import('pages/Settings/Settings.vue')
+          },
+          {
+            path: 'account',
+            component: () => import('pages/Settings/Account.vue')
+          }
+        ]
+      }
+    ]
   }
 ]
 

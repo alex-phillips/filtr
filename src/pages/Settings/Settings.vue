@@ -1,0 +1,47 @@
+<template>
+  <div class="row justify-center">
+    <div class="col-md-8 col-xs-11">
+      <h4>Settings</h4>
+      <h5 class="text-grey-6">Media Paths</h5>
+      <q-input
+        v-model="config.path"
+        type="textarea"
+      />
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      config: {}
+    }
+  },
+
+  created () {
+    for (let config of this.$store.getters['config/getConfig']) {
+      this.config[config.name] = config.value
+    }
+  },
+
+  methods: {
+    async submit () {
+      await this.$axios.put(`${this.$config.server.base_url}/config`, this.config)
+
+      this.$q.notify({
+        message: 'Saved successfully!',
+        position: 'bottom-right'
+      })
+
+      this.$store.dispatch('config/fetchConfig')
+    }
+  }
+}
+</script>
+
+<style scoped>
+div.row {
+  /* padding-top: 20px */
+}
+</style>
