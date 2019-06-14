@@ -22,6 +22,7 @@
         </q-toolbar-title>
 
         <q-btn
+          v-if="$store.getters['users/isLoggedIn']"
           flat
           dense
           round

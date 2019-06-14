@@ -20,7 +20,7 @@
 
         <q-toolbar-title></q-toolbar-title>
 
-        <q-btn flat round dense @click="$refs.albumEditor.open()">
+        <q-btn v-if="$store.getters['users/isLoggedIn']" flat round dense @click="$refs.albumEditor.open()">
           <q-icon name="add_to_photos"></q-icon>
         </q-btn>
 
