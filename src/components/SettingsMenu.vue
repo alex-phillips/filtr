@@ -80,6 +80,10 @@ export default {
 
     logout () {
       this.$store.commit('users/logout')
+      if (this.$route.path === '/') {
+        return this.$router.go()
+      }
+
       this.$router.push('/')
     },
 
