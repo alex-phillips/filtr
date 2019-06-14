@@ -8,7 +8,7 @@
        class="q-gutter-md"
       >
         <q-input
-          v-model="config.path"
+          v-model="path"
           type="textarea"
         />
         <div>
@@ -23,19 +23,21 @@
 export default {
   data () {
     return {
-      config: {}
+      path: ''
     }
   },
 
   created () {
     for (let config of this.$store.getters['config/getConfig']) {
-      this.config[config.name] = config.value
+      this[config.name] = config.value
     }
   },
 
   methods: {
     async submit () {
-      await this.$axios.put(`${this.$config.server.base_url}/config`, this.config)
+      await this.$axios.put(`${this.$config.server.base_url}/config`, {
+        path: this.path
+      })
 
       this.$q.notify({
         message: 'Saved successfully!',
