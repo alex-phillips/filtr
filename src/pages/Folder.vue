@@ -14,7 +14,7 @@
       <q-toolbar class="bg-grey-3">
         <q-btn flat @click="$emit('toggle-drawer')" round dense icon="menu" />
 
-        <top-level-navv-if="!selectMode"></top-level-navv-if="!selectMode">
+        <top-level-nav v-if="!selectMode"></top-level-nav>
 
         <sort-nav v-if="!selectMode" @sort="sort"></sort-nav>
 
