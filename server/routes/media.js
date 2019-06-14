@@ -282,7 +282,7 @@ function convertSecToTime (sec) {
   date.setSeconds(sec)
   var result = date.toISOString().substr(11, 8)
   var tmp = (sec + '').split('.')
-  if (tmp.length == 2) {
+  if (tmp.length === 2) {
     result += '.' + tmp[1]
   }
   return result
