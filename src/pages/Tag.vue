@@ -16,6 +16,10 @@
 
         <sort-nav v-if="!selectMode" @sort="sort"></sort-nav>
 
+        <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
+          <q-icon name="close"></q-icon>DESELECT ALL
+        </q-btn>
+
         <q-breadcrumbs
           v-if="tag.id !== undefined"
         >
@@ -25,10 +29,6 @@
             to="/albums"
           />
         </q-breadcrumbs>
-
-        <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
-          <q-icon name="close"></q-icon>DESELECT ALL
-        </q-btn>
 
         <q-toolbar-title></q-toolbar-title>
 

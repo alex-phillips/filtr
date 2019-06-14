@@ -18,6 +18,10 @@
 
         <sort-nav v-if="!selectMode" @sort="sort"></sort-nav>
 
+        <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
+          <q-icon name="close"></q-icon>DESELECT ALL
+        </q-btn>
+
         <q-breadcrumbs>
           <q-breadcrumbs-el
             v-for="item in lineage"
@@ -26,10 +30,6 @@
             :to="item.url"
           />
         </q-breadcrumbs>
-
-        <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
-          <q-icon name="close"></q-icon>DESELECT ALL
-        </q-btn>
 
         <q-toolbar-title></q-toolbar-title>
 
