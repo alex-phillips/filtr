@@ -12,7 +12,7 @@
 
     <q-page-sticky expand position="top">
       <q-toolbar class="bg-grey-3">
-        <top-level-nav></top-level-nav>
+        <top-level-nav v-if="!selectMode"></top-level-nav>
 
         <q-btn flat v-if="selectMode" @click="$refs.gridView.reset()">
           <q-icon name="close"></q-icon>DESELECT ALL

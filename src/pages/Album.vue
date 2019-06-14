@@ -17,9 +17,9 @@
 
     <q-page-sticky expand position="top">
       <q-toolbar class="bg-grey-3">
-        <top-level-nav></top-level-nav>
+        <top-level-nav v-if="!selectMode"></top-level-nav>
 
-        <sort-nav @sort="sort"></sort-nav>
+        <sort-nav v-if="!selectMode" @sort="sort"></sort-nav>
 
         <q-breadcrumbs>
           <q-breadcrumbs-el
