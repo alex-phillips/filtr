@@ -24,6 +24,10 @@
           <q-icon name="arrow_back" />
         </q-btn>
 
+        <q-avatar square>
+          <img src="assets/logo.png">
+        </q-avatar>
+
         <q-toolbar-title>
           Filtr
         </q-toolbar-title>
