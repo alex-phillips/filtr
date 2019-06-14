@@ -72,12 +72,15 @@ export default {
     },
 
     async submit () {
-      let response = await this.$axios.post(`${this.$config.server.base_url}/login`, {
-        email: this.email,
-        password: this.password
-      })
+      let response = null
+      try {
+        response = await this.$axios.post(`${this.$config.server.base_url}/login`, {
+          email: this.email,
+          password: this.password
+        })
+      } catch (e) {}
 
-      if (!response.data.id) {
+      if (!response || !response.data.id) {
         return this.$q.notify({
           color: 'red-5',
           textColor: 'white',
