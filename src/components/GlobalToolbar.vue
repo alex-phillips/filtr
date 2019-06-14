@@ -25,7 +25,7 @@
         </q-btn>
 
         <q-avatar square>
-          <img src="assets/logo.png">
+          <img src="~assets/logo.png">
         </q-avatar>
 
         <q-toolbar-title>
