@@ -146,7 +146,7 @@ export default {
 
     sort (config) {
       this.media = []
-      this.initialLoad = true
+      this.$store.commit('media/setMedia', [])
       this.getData()
     },
 

@@ -3,8 +3,7 @@ export default {
   data () {
     return {
       dataUrl: '',
-      media: [],
-      initialLoad: true
+      media: []
     }
   },
 
