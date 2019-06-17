@@ -3,20 +3,19 @@ export default {
   data () {
     return {
       dataUrl: '',
-      media: []
+      media: [],
+      initialLoad: true
     }
   },
 
   methods: {
     async getData (index, done) {
       let restored = this.restorePrevious()
-      console.log('restored: ', restored)
 
       this.$root.$emit('restoreScroll')
 
       if (restored) {
         if (done) {
-          console.log('calling done')
           done()
         }
 
@@ -45,14 +44,17 @@ export default {
     },
 
     restorePrevious () {
+      if (this.initialLoad) {
+        this.initialLoad = false
+        return false
+      }
+
       let lastRoute = this.$store.getters['media/getFullPath']
       if (lastRoute !== this.$route.fullPath) {
         return false
       }
 
       if (this.media.length === 0) {
-        console.log('attempting to get stored media...')
-        console.log(this.$store.getters['media/getMedia'])
         this.media = this.$store.getters['media/getMedia']
         if (this.media.length !== 0) {
           return true

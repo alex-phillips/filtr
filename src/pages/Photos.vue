@@ -82,6 +82,7 @@ export default {
 
     sort (config) {
       this.media = []
+      this.initialLoad = true
       this.getData()
     }
   }
