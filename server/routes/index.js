@@ -98,6 +98,7 @@ router.get('/search', wrap(async (req, res, next) => {
   for (let term of terms) {
     retval.media = retval.media.concat(await Media.findAll({
       where: {
+        ...!req.user && { public: 1 },
         [Op.or]: [
           {
             name: {
@@ -115,6 +116,7 @@ router.get('/search', wrap(async (req, res, next) => {
 
     let tags = await Tag.findAll({
       where: {
+        ...!req.user && { public: 1 },
         name: {
           [Op.like]: `%${term}%`
         }
@@ -126,6 +128,7 @@ router.get('/search', wrap(async (req, res, next) => {
 
     retval.albums = retval.albums.concat(await Album.findAll({
       where: {
+        ...!req.user && { public: 1 },
         [Op.or]: [
           {
             name: {
