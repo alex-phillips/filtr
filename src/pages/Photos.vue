@@ -4,6 +4,7 @@
     <media-editor ref="mediaEditor" :media="selectedMedia"></media-editor>
 
     <grid-view
+      v-if="media"
       ref="gridView"
       :media="media"
       @loadMore="getData"
@@ -50,6 +51,7 @@ import TopLevelNav from '../components/TopLevelNav'
 import SortNav from '../components/SortNav'
 
 import GridViewWatcher from '../mixins/GridViewWatcher'
+import GridViewState from '../mixins/GridViewState'
 
 export default {
   name: 'PageIndex',
@@ -63,16 +65,12 @@ export default {
   },
 
   mixins: [
-    GridViewWatcher
+    GridViewWatcher,
+    GridViewState
   ],
 
-  data () {
-    return {
-      media: []
-    }
-  },
-
-  beforeMount () {
+  created () {
+    this.dataUrl = `${this.$config.server.base_url}/media/`
     this.reset()
   },
 
@@ -84,28 +82,7 @@ export default {
 
     sort (config) {
       this.media = []
-      console.log(this.$store.getters['media/sortOrder'])
       this.getData()
-    },
-
-    async getData (index, done) {
-      let query = {
-        offset: this.media.length,
-        sortMode: this.$store.getters['media/sortMode'],
-        order: this.$store.getters['media/sortOrder']
-      }
-      query = Object.keys(query).map((key, i) => `${key}=${query[key]}`).join('&')
-
-      let response = await this.$axios.get(`${this.$config.server.base_url}/media/?${query}`)
-      this.media = this.media.concat(response.data)
-
-      if (response.data.length === 0) {
-        return
-      }
-
-      if (done) {
-        done()
-      }
     }
   }
 }

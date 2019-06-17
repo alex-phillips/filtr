@@ -1,25 +1,14 @@
-import { Cookies } from 'quasar'
-
 export function getMedia (state) {
-  if (state.media.length === 0) {
-    return Cookies.get('media')
-  }
-
   return state.media
 }
 
 export function getIndex (state) {
-  if (state.index === null) {
-    return Cookies.get('media-index')
-  }
-
   return state.index
 }
 
 export function getNext (state, getters) {
   let media = getters.getMedia
   let index = getters.getIndex
-  console.log('index: ', index)
   if (index === media.length - 1) {
     return null
   }
@@ -35,6 +24,10 @@ export function getPrevious (state, getters) {
   }
 
   return media[index - 1]
+}
+
+export function getFullPath (state) {
+  return state.fullPath
 }
 
 export function sortMode (state) {

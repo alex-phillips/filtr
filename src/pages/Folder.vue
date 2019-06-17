@@ -61,6 +61,7 @@ import TopLevelNav from '../components/TopLevelNav'
 import SortNav from '../components/SortNav'
 
 import GridViewWatcher from '../mixins/GridViewWatcher'
+import GridViewState from '../mixins/GridViewState'
 
 export default {
   name: 'PageIndex',
@@ -74,19 +75,18 @@ export default {
   },
 
   mixins: [
-    GridViewWatcher
+    GridViewWatcher,
+    GridViewState
   ],
-
-  data () {
-    return {
-      media: []
-    }
-  },
 
   computed: {
     lineage () {
       return this.$store.getters['folders/getFolderLineage'](this.$route.params.id)
     }
+  },
+
+  created () {
+    this.dataUrl = `${this.$config.server.base_url}/folders/${this.$route.params.id}/media/`
   },
 
   beforeMount () {
@@ -96,32 +96,11 @@ export default {
   methods: {
     reset () {
       this.media = []
-      this.albums = []
     },
 
     sort (config) {
       this.media = []
       this.getData()
-    },
-
-    async getData (index, done) {
-      let query = {
-        offset: this.media.length,
-        sortMode: this.$store.getters['media/sortMode'],
-        order: this.$store.getters['media/sortOrder']
-      }
-      query = Object.keys(query).map((key, i) => `${key}=${query[key]}`).join('&')
-
-      let response = await this.$axios.get(`${this.$config.server.base_url}/folders/${this.$route.params.id}/media/?${query}`)
-      this.media = this.media.concat(response.data)
-
-      if (response.data.length === 0) {
-        return
-      }
-
-      if (done) {
-        done()
-      }
     }
   }
 }

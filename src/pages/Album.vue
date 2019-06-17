@@ -88,6 +88,7 @@ import TopLevelNav from '../components/TopLevelNav'
 import SortNav from '../components/SortNav'
 
 import GridViewWatcher from '../mixins/GridViewWatcher'
+import GridViewState from '../mixins/GridViewState'
 
 export default {
   name: 'AlbumIndex',
@@ -103,15 +104,14 @@ export default {
   },
 
   mixins: [
-    GridViewWatcher
+    GridViewWatcher,
+    GridViewState
   ],
 
   data () {
     return {
-      dataUrl: null,
       album: {},
-      albums: [],
-      media: []
+      albums: []
     }
   },
 
@@ -121,8 +121,12 @@ export default {
     }
   },
 
-  created () {
-    this.dataUrl = `${this.$config.server.base_url}/albums/${this.$route.params.id}`
+  async created () {
+    this.albumUrl = `${this.$config.server.base_url}/albums/${this.$route.params.id}`
+    this.dataUrl = `${this.$config.server.base_url}/albums/${this.$route.params.id}/media/`
+
+    let response = await this.$axios.get(this.albumUrl)
+    this.album = response.data
   },
 
   async beforeMount () {
@@ -135,7 +139,7 @@ export default {
     },
 
     async getAlbumData () {
-      let response = await this.$axios.get(`${this.dataUrl}`)
+      let response = await this.$axios.get(`${this.albumUrl}`)
       this.album = response.data
       this.albums = this.album.children
     },
@@ -145,33 +149,8 @@ export default {
       this.getData()
     },
 
-    async getData (index, done) {
-      if (!this.album.id) {
-        let response = await this.$axios.get(`${this.dataUrl}`)
-        this.album = response.data
-      }
-
-      let query = {
-        offset: this.media.length,
-        sortMode: this.$store.getters['media/sortMode'],
-        order: this.$store.getters['media/sortOrder']
-      }
-      query = Object.keys(query).map((key, i) => `${key}=${query[key]}`).join('&')
-
-      let response = await this.$axios.get(`${this.dataUrl}/media/?${query}`)
-      this.media = this.media.concat(response.data)
-
-      if (response.data.length === 0) {
-        return
-      }
-
-      if (done) {
-        done()
-      }
-    },
-
     async deleteAlbum () {
-      await this.$axios.delete(this.dataUrl)
+      await this.$axios.delete(this.albumUrl)
       this.$store.commit('albums/deleteAlbum', this.album)
       this.$store.dispatch('albums/fetchAlbums')
       this.$router.go(-1)

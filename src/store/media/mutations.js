@@ -1,21 +1,15 @@
 import Vue from 'vue'
-import { Cookies } from 'quasar'
 
 export function setMedia (state, media) {
-  media = media.map(m => {
-    return {
-      id: m.id,
-      url: m.url
-    }
-  })
-
   Vue.set(state, 'media', media)
-  Cookies.set('media', JSON.stringify(media))
+}
+
+export function setFullPath (state, fullPath) {
+  Vue.set(state, 'fullPath', fullPath)
 }
 
 export function setIndex (state, index) {
   Vue.set(state, 'index', index)
-  Cookies.set('media-index', index)
 }
 
 export function setSortMode (state, mode) {

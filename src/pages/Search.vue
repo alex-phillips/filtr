@@ -52,6 +52,7 @@ import TopLevelNav from '../components/TopLevelNav'
 import SortNav from '../components/SortNav'
 
 import GridViewWatcher from '../mixins/GridViewWatcher'
+import GridViewState from '../mixins/GridViewState'
 
 export default {
   name: 'AlbumIndex',
@@ -65,14 +66,18 @@ export default {
   },
 
   mixins: [
-    GridViewWatcher
+    GridViewWatcher,
+    GridViewState
   ],
 
   data () {
     return {
-      albums: [],
-      media: []
+      albums: []
     }
+  },
+
+  created () {
+    this.dataUrl = `${this.$config.server.base_url}/search/`
   },
 
   async beforeMount () {
@@ -83,21 +88,6 @@ export default {
     sort (config) {
       this.media = []
       this.getData()
-    },
-
-    async getData () {
-      let query = {
-        offset: this.media.length,
-        sortMode: this.$store.getters['media/sortMode'],
-        order: this.$store.getters['media/sortOrder'],
-        query: this.$route.query.query
-      }
-      query = Object.keys(query).map((key, i) => `${key}=${query[key]}`).join('&')
-
-      let response = await this.$axios.get(`${this.$config.server.base_url}/search?${query}`)
-
-      this.media = response.data.media
-      this.albums = response.data.albums
     }
   }
 }

@@ -60,6 +60,7 @@ import TopLevelNav from '../components/TopLevelNav'
 import SortNav from '../components/SortNav'
 
 import GridViewWatcher from '../mixins/GridViewWatcher'
+import GridViewState from '../mixins/GridViewState'
 
 export default {
   name: 'PageIndex',
@@ -73,19 +74,18 @@ export default {
   },
 
   mixins: [
-    GridViewWatcher
+    GridViewWatcher,
+    GridViewState
   ],
 
   data () {
     return {
-      tag: {},
-      dataUrl: null,
-      media: []
+      tag: {}
     }
   },
 
   created () {
-    this.dataUrl = `${this.$config.server.base_url}/tags/${this.$route.params.id}`
+    this.dataUrl = `${this.$config.server.base_url}/tags/${this.$route.params.id}/media/`
     this.tag = this.$store.getters['tags/getTagByID'](parseInt(this.$route.params.id))
   },
 
@@ -93,26 +93,6 @@ export default {
     sort (config) {
       this.media = []
       this.getData()
-    },
-
-    async getData (index, done) {
-      let query = {
-        offset: this.media.length,
-        sortMode: this.$store.getters['media/sortMode'],
-        order: this.$store.getters['media/sortOrder']
-      }
-      query = Object.keys(query).map((key, i) => `${key}=${query[key]}`).join('&')
-
-      let response = await this.$axios.get(`${this.dataUrl}/media/?${query}`)
-      this.media = this.media.concat(response.data)
-
-      if (response.data.length === 0) {
-        return
-      }
-
-      if (done) {
-        done()
-      }
     }
   }
 }
