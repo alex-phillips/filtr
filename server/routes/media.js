@@ -119,7 +119,7 @@ router.get('/:id/segment/:start/:duration', wrap(async (req, res, next) => {
   })
 
   if (!req.user && !media.public) {
-    // return res.sendStatus(404)
+    return res.sendStatus(404)
   }
 
   var audioBitrate = 128
