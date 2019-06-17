@@ -78,6 +78,7 @@ export default {
 
   created () {
     this.dataUrl = `${this.$config.server.base_url}/search/`
+    this.query.query = this.$route.query.query
   },
 
   async beforeMount () {

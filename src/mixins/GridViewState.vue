@@ -1,8 +1,11 @@
 <script>
+import querystring from 'querystring'
+
 export default {
   data () {
     return {
       dataUrl: '',
+      query: {},
       media: []
     }
   },
@@ -24,14 +27,21 @@ export default {
       this.$store.commit('media/setFullPath', this.$route.fullPath)
 
       let query = {
+        ...this.query,
         offset: this.media.length,
         sortMode: this.$store.getters['media/sortMode'],
         order: this.$store.getters['media/sortOrder']
       }
-      query = Object.keys(query).map((key, i) => `${key}=${query[key]}`).join('&')
 
-      let response = await this.$axios.get(`${this.dataUrl}?${query}`)
-      this.media = this.media.concat(response.data)
+      let response = await this.$axios.get(`${this.dataUrl}?${querystring.stringify(query)}`)
+
+      // Handle the case where this returns albums, media, or both
+      if (response.data.media || response.data.albums) {
+        this.media = this.media.concat(response.data.media || [])
+        this.albums = response.data.albums || []
+      } else {
+        this.media = this.media.concat(response.data)
+      }
 
       if (response.data.length === 0) {
         return
