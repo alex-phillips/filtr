@@ -70,18 +70,11 @@ export default {
   ],
 
   created () {
-    this.dataUrl = `${this.$config.server.base_url}/media/`
-    this.reset()
+    this.mediaUrl = `${this.$config.server.base_url}/media/`
   },
 
   methods: {
-    reset () {
-      this.media = []
-      this.albums = []
-    },
-
     sort (config) {
-      this.media = []
       this.$store.commit('media/setMedia', [])
       this.getData()
     }

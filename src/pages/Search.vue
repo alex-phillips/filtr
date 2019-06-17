@@ -7,6 +7,7 @@
       ref="gridView"
       :media="media"
       :albums="albums"
+      @loadMore="loadMore"
       @selected="selected"
     ></grid-view>
 
@@ -70,25 +71,19 @@ export default {
     GridViewState
   ],
 
-  data () {
-    return {
-      albums: []
-    }
-  },
-
   created () {
-    this.dataUrl = `${this.$config.server.base_url}/search/`
+    this.mediaUrl = `${this.$config.server.base_url}/search/`
     this.query.query = this.$route.query.query
-  },
-
-  async beforeMount () {
-    this.getData()
   },
 
   methods: {
     sort (config) {
-      this.media = []
       this.$store.commit('media/setMedia', [])
+      this.getData()
+    },
+
+    loadMore (done) {
+      // Search doesn't paginate, so don't pass in 'done' callback from the infinite scroller
       this.getData()
     }
   }

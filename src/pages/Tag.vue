@@ -85,13 +85,12 @@ export default {
   },
 
   created () {
-    this.dataUrl = `${this.$config.server.base_url}/tags/${this.$route.params.id}/media/`
+    this.mediaUrl = `${this.$config.server.base_url}/tags/${this.$route.params.id}/media/`
     this.tag = this.$store.getters['tags/getTagByID'](parseInt(this.$route.params.id))
   },
 
   methods: {
     sort (config) {
-      this.media = []
       this.$store.commit('media/setMedia', [])
       this.getData()
     }

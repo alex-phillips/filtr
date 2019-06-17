@@ -1,13 +1,12 @@
 <template>
   <q-page>
-    <album-editor ref="albumEditor" @close="getAlbumData"></album-editor>
+    <album-editor ref="albumEditor" @close="getData"></album-editor>
     <album-selector ref="albumSelector" @selected="addToAlbum"></album-selector>
     <media-editor ref="mediaEditor" :media="selectedMedia"></media-editor>
     <confirm ref="confirmRemoveImages" :message="'Remove images from album?'" @confirm="removeFromAlbum"></confirm>
     <confirm ref="confirmDeleteAlbum" :message="'Really delete album?'" @confirm="deleteAlbum"></confirm>
 
     <grid-view
-      v-if="album.id !== undefined"
       ref="gridView"
       :media="media"
       :albums="albums"
@@ -108,44 +107,19 @@ export default {
     GridViewState
   ],
 
-  data () {
-    return {
-      album: {},
-      albums: []
-    }
-  },
-
   computed: {
     lineage () {
       return this.$store.getters['albums/getAlbumLineage'](this.$route.params.id)
     }
   },
 
-  async created () {
+  created () {
     this.albumUrl = `${this.$config.server.base_url}/albums/${this.$route.params.id}`
-    this.dataUrl = `${this.$config.server.base_url}/albums/${this.$route.params.id}/media/`
-
-    let response = await this.$axios.get(this.albumUrl)
-    this.album = response.data
-  },
-
-  async beforeMount () {
-    this.getAlbumData()
+    this.mediaUrl = `${this.$config.server.base_url}/albums/${this.$route.params.id}/media/`
   },
 
   methods: {
-    reset () {
-      this.media = []
-    },
-
-    async getAlbumData () {
-      let response = await this.$axios.get(`${this.albumUrl}`)
-      this.album = response.data
-      this.albums = this.album.children
-    },
-
     sort (config) {
-      this.media = []
       this.$store.commit('media/setMedia', [])
       this.getData()
     },

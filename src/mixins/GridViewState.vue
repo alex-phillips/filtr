@@ -4,9 +4,14 @@ import querystring from 'querystring'
 export default {
   data () {
     return {
-      dataUrl: '',
-      query: {},
-      media: []
+      // Entities
+      album: {},
+      media: [],
+      albums: [],
+
+      albumUrl: '',
+      mediaUrl: '',
+      query: {}
     }
   },
 
@@ -26,6 +31,12 @@ export default {
 
       this.$store.commit('media/setFullPath', this.$route.fullPath)
 
+      if (this.albumUrl) {
+        let response = await this.$axios.get(`${this.albumUrl}`)
+        this.album = response.data
+        this.albums = this.album.children
+      }
+
       let query = {
         ...this.query,
         offset: this.media.length,
@@ -33,7 +44,7 @@ export default {
         order: this.$store.getters['media/sortOrder']
       }
 
-      let response = await this.$axios.get(`${this.dataUrl}?${querystring.stringify(query)}`)
+      let response = await this.$axios.get(`${this.mediaUrl}?${querystring.stringify(query)}`)
 
       // Handle the case where this returns albums, media, or both
       if (response.data.media || response.data.albums) {
@@ -63,14 +74,22 @@ export default {
         return false
       }
 
+      let retval = false
       if (this.media.length === 0) {
         this.media = this.$store.getters['media/getMedia']
         if (this.media.length !== 0) {
-          return true
+          retval = true
         }
       }
 
-      return false
+      if (this.albums.length === 0) {
+        this.albums = this.$store.getters['media/getAlbums']
+        if (this.albums.length !== 0) {
+          retval = true
+        }
+      }
+
+      return retval
     }
   }
 }

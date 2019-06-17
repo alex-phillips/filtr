@@ -86,20 +86,11 @@ export default {
   },
 
   created () {
-    this.dataUrl = `${this.$config.server.base_url}/folders/${this.$route.params.id}/media/`
-  },
-
-  beforeMount () {
-    this.reset()
+    this.mediaUrl = `${this.$config.server.base_url}/folders/${this.$route.params.id}/media/`
   },
 
   methods: {
-    reset () {
-      this.media = []
-    },
-
     sort (config) {
-      this.media = []
       this.$store.commit('media/setMedia', [])
       this.getData()
     }

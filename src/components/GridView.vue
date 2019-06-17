@@ -132,10 +132,7 @@ export default {
     },
 
     reset () {
-      for (let asset of this.media) {
-        this.$set(asset, 'selected', false)
-      }
-
+      this.$store.commit('media/resetSelection')
       this.selectMode = false
       this.selectedMedia.clear()
       this.$emit('selected', this.selectedMedia)
@@ -152,6 +149,7 @@ export default {
       if (!(event.ctrlKey || event.shiftKey || event.metaKey) && !this.selectMode) {
         this.$store.commit('media/setIndex', index)
         this.$store.commit('media/setMedia', this.media)
+        this.$store.commit('media/setAlbums', this.albums)
         return this.$router.push(`/media/${media.id}`)
       }
 

@@ -2,6 +2,10 @@ export function getMedia (state) {
   return state.media
 }
 
+export function getAlbums (state) {
+  return state.albums
+}
+
 export function getIndex (state) {
   return state.index
 }
