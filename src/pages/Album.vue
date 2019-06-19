@@ -120,6 +120,7 @@ export default {
 
   methods: {
     sort (config) {
+      this.media = []
       this.$store.commit('media/setMedia', [])
       this.getData()
     },

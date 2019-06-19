@@ -242,6 +242,9 @@ class Media extends Sequelize.Model {
       case 'name':
         order.push(['name', direction])
         break
+      case 'taken':
+        order.push(['takestamp', direction])
+        break
     }
 
     return order

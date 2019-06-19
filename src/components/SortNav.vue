@@ -26,6 +26,7 @@ export default {
     return {
       config: {
         'date_added': 'Date Added',
+        'taken': 'Date Taken',
         'name': 'Name'
       },
       current: 'date_added',
