@@ -25,6 +25,7 @@
     "jsonwebtoken": "^8.5.1",
     "justified-layout": "^2.1.2",
     "mmmagic": "^0.5.3",
+    "nodemailer": "^6.2.1",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "quasar": "^1.0.0-rc.5",
