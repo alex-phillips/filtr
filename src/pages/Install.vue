@@ -17,19 +17,19 @@
         Let's start by creating an admin account!
         <q-form>
           <q-input
-           dense
-           v-model="email"
-           label="Email"
-           lazy-rules
-           :rules="[ val => val && val.length > 0 || 'Email is required!' ]"
+            dense
+            v-model="email"
+            label="Email"
+            lazy-rules
+            :rules="[ val => val && val.length > 0 || 'Email is required!' ]"
           ></q-input>
           <q-input
-           dense
-           v-model="password"
-           label="Password"
-           type="password"
-           lazy-rules
-           :rules="[ val => val && val.length > 0 || 'Password is required!' ]"
+            dense
+            v-model="password"
+            label="Password"
+            type="password"
+            lazy-rules
+            :rules="[ val => val && val.length > 0 || 'Password is required!' ]"
           ></q-input>
         </q-form>
       </q-step>
@@ -49,7 +49,7 @@
         title="Finish"
         icon="done_all"
       >
-        Let's get started!
+        You're ready to go! Be sure to run your first library scan to start seeing photos.
       </q-step>
 
       <template v-slot:navigation>
