@@ -55,7 +55,7 @@ class Scanner {
 
           try {
             if (mimetype.match(/image\/(?:png|jpg|jpeg|gif)/)) {
-              mediaInfo = await this.getImageInformation(file)
+              mediaInfo = await this.getImageInformation(file, mimetype)
             } else if (mimetype.match(/video\//)) {
               mediaInfo = await this.getVideoInformation(file)
             } else {
@@ -63,15 +63,27 @@ class Scanner {
               continue
             }
 
-            media = await Media.create({
-              ...mediaInfo,
-              path: file,
-              name: path.basename(file, path.extname(file)),
-              size: stat.size,
-              mimetype: mimetype,
-              checksum: this.getFileMd5(file),
-              lastModified: new Date(stat.mtime)
-            })
+            if (media) {
+              media = await media.set({
+                ...mediaInfo,
+                path: file,
+                name: path.basename(file, path.extname(file)),
+                size: stat.size,
+                mimetype: mimetype,
+                checksum: this.getFileMd5(file),
+                lastModified: new Date(stat.mtime)
+              })
+            } else {
+              media = await Media.create({
+                ...mediaInfo,
+                path: file,
+                name: path.basename(file, path.extname(file)),
+                size: stat.size,
+                mimetype: mimetype,
+                checksum: this.getFileMd5(file),
+                lastModified: new Date(stat.mtime)
+              })
+            }
           } catch (err) {
             console.log(`FAILED to scan file ${file}: `, err.message)
             continue
@@ -152,13 +164,21 @@ class Scanner {
     })
   }
 
-  async getImageInformation (filepath) {
+  async getImageInformation (filepath, mimetype) {
     let imageInfo = await sharp(filepath).metadata()
-
-    return {
+    let retval = {
       width: imageInfo.width,
       height: imageInfo.height
     }
+
+    if (mimetype === 'image/jpeg') {
+      retval = {
+        ...retval,
+        ...Media.getEXIFData(filepath)
+      }
+    }
+
+    return retval
   }
 
   walk (dir, results) {
