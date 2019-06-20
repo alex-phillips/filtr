@@ -31,15 +31,15 @@
           <q-img
             v-for="(box, index) in layoutBoxes"
             v-bind:key="media[index].id"
-            :class="{ selected: media[index].selected }"
+            :class="[{ selected: media[index].selected }, `orientation-${media[index].orientation}`]"
             @click="onMediaClick(index, $event)"
             v-touch-hold.mouse="() => selectMedia(index)"
             class="image-preview"
             v-lazy:background="`${$config.server.base_url}/media/${media[index].id}/thumbnail/`"
             spinner-color="primary"
             :style="{
-              width: `${layoutBoxes[index].width}px`,
-              height: `${layoutBoxes[index].height}px`,
+              width: media[index].orientation > 4 ? `${layoutBoxes[index].height}px` : `${layoutBoxes[index].width}px`,
+              height: media[index].orientation > 4 ? `${layoutBoxes[index].width}px` : `${layoutBoxes[index].height}px`,
               top: `${layoutBoxes[index].top}px`,
               left: `${layoutBoxes[index].left}px`,
             }"
@@ -219,11 +219,12 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .grid-container {
   position: relative;
   padding-top: 50px;
   width: 100%;
+  min-height: 300px;
 
   -webkit-user-select: none; /* Safari 3.1+ */
   -moz-user-select: none; /* Firefox 2+ */
@@ -261,5 +262,40 @@ export default {
 
 .selected {
   border: $warning 5px solid
+}
+
+.orientation-1 {}
+
+.orientation-2 {
+  transform: rotateY(180deg)
+}
+
+.orientation-3 {
+  transform: rotate(180deg)
+}
+
+.orientation-4 {
+  transform: rotate(180deg) rotateY(180deg)
+}
+
+.orientation-5 {
+  transform: rotate(270deg) rotateY(180deg);
+  transform-origin: top left;
+
+}
+
+.orientation-6 {
+  transform: translateY(-100%) rotate(90deg);
+  transform-origin: bottom left;
+}
+
+.orientation-7 {
+  transform: translateY(-100%) translateX(-100%) rotate(90deg) rotateY(180deg);
+  transform-origin: bottom right;
+}
+
+.orientation-8 {
+  transform: translateX(-100%) rotate(270deg);
+  transform-origin: top right;
 }
 </style>

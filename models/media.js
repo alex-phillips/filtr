@@ -164,9 +164,8 @@ class Media extends Sequelize.Model {
   toJSON () {
     let data = this.get()
 
-    if (data.orientation === 7) {
-      console.log(data)
-    }
+    data.realWidth = data.width
+    data.realHeight = data.height
 
     switch (data.orientation) {
       case 5:
@@ -175,15 +174,9 @@ class Media extends Sequelize.Model {
       case 8:
         let w = data.width
         let h = data.height
-        data.realWidth = h
         data.width = h
-        data.realHeight = w
         data.height = w
         break
-    }
-
-    if (data.orientation === 7) {
-      console.log(data)
     }
 
     return {

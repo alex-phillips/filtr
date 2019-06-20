@@ -11,7 +11,13 @@
     ></info-drawer>
 
     <q-page>
-      <img class="media media-fit" :src="src" contain v-if="media.mimetype && media.mimetype.match(/image\//)"/>
+      <img
+        v-if="media.mimetype && media.mimetype.match(/image\//)"
+        class="media media-fit"
+        :class="[`orientation-${media.orientation}`]"
+        :src="src"
+        contain
+      />
       <video-player :options="videoOptions"
         class="media"
         v-if="media.mimetype && media.mimetype.match(/video\//)"
@@ -152,4 +158,35 @@ export default {
   right: 0;
   bottom: 0;
 }
+
+.orientation-1 {}
+
+.orientation-2 {
+  transform: rotateY(180deg)
+}
+
+.orientation-3 {
+  transform: rotate(180deg)
+}
+
+.orientation-4 {
+  transform: rotate(180deg) rotateY(180deg)
+}
+
+.orientation-5 {
+  transform: rotate(270deg) rotateY(180deg);
+}
+
+.orientation-6 {
+  transform: rotate(90deg);
+}
+
+.orientation-7 {
+  transform: rotate(90deg) rotateY(180deg);
+}
+
+.orientation-8 {
+  transform: rotate(270deg);
+}
+
 </style>
