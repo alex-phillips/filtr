@@ -41,6 +41,12 @@
           </q-item-section>
         </q-item>
         <q-item>
+          <q-item-section>
+            <q-item-label>Location</q-item-label>
+            <q-item-label caption><q-icon name="location_on" />{{ media.latitude }}, {{ media.longitude }}</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item v-if="tags.length > 0">
           <q-chip v-for="tag in tags" v-bind:key="tag.id"
             dense
             icon="local_offer"
@@ -48,7 +54,7 @@
             @click="$router.push(tag.url)"
           >{{ tag.name }}</q-chip>
         </q-item>
-        <q-item v-if="$store.getters['user/isLoggedIn']" clickable @click="$refs.mediaEditor.open()">
+        <q-item v-if="$store.getters['users/isLoggedIn']" clickable @click="$refs.mediaEditor.open()">
           <q-item-section avatar>
             <q-icon name="edit" />
           </q-item-section>
