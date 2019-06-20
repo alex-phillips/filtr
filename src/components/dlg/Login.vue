@@ -1,5 +1,5 @@
 <template>
- <q-dialog ref="dialog" @before-show="reset">
+  <q-dialog ref="dialog" @before-show="reset">
     <q-card style="width: 500px; max-width: 80vw;">
       <q-card-section>
         <div class="text-h6">Login</div>
