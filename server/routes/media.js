@@ -95,7 +95,6 @@ router.get('/:id/playlist.m3u8', wrap(async (req, res, next) => {
       res.write('#EXT-X-ALLOW-CACHE:YES\n')
       res.write('#EXT-X-PLAYLIST-TYPE:VOD\n')
       res.write('#EXT-X-TARGETDURATION:' + tsDuration + '\n')
-      console.log('duration ', info.format.duration)
       for (var t = 0; t < info.format.duration; t += tsDuration) {
         var currDuration = Math.min(tsDuration, info.format.duration - t)
         res.write('#EXTINF:' + currDuration + ',\n')
@@ -111,7 +110,6 @@ router.get('/:id/playlist.m3u8', wrap(async (req, res, next) => {
 }))
 
 router.get('/:id/segment/:start/:duration', wrap(async (req, res, next) => {
-  console.log('segment request')
   let media = await Media.findOne({
     where: {
       id: req.params.id
