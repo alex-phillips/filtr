@@ -8,7 +8,6 @@ module.exports = function (ctx) {
       'axios',
       'config',
       'lazyload',
-      'resize',
       'socketio'
     ],
 
