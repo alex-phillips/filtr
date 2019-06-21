@@ -30,92 +30,7 @@ class Scanner {
         continue
       }
 
-      let files = this.walk(dir)
-
-      for (let file of files) {
-        console.log(`SCANNING file ${file}`)
-
-        let stat = fs.statSync(file)
-        let media = await Media.findOne({
-          where: {
-            path: file
-          }
-        })
-
-        if (media && media.size === stat.size && media.lastModified.toString() === (new Date(stat.mtime).toString())) {
-          // If size and modtime are the same, it hasn't changed since the last scan
-        } else {
-          // Remove thumbnail if it exists and the photo was updated
-          if (media && fs.existsSync(media.getThumbnailPath())) {
-            fs.unlinkSync(media.getThumbnailPath())
-          }
-
-          let mimetype = await Media.getMIMEType(file)
-          let mediaInfo = {}
-
-          try {
-            if (mimetype.match(/image\/(?:png|jpg|jpeg|gif)/)) {
-              mediaInfo = await this.getImageInformation(file, mimetype)
-            } else if (mimetype.match(/video\//)) {
-              mediaInfo = await this.getVideoInformation(file)
-            } else {
-              console.log(`Invalid file type: ${mimetype}`)
-              continue
-            }
-
-            if (media) {
-              media = await media.set({
-                ...mediaInfo,
-                path: file,
-                name: path.basename(file, path.extname(file)),
-                size: stat.size,
-                mimetype: mimetype,
-                checksum: this.getFileMd5(file),
-                lastModified: new Date(stat.mtime)
-              })
-            } else {
-              media = await Media.create({
-                ...mediaInfo,
-                path: file,
-                name: path.basename(file, path.extname(file)),
-                size: stat.size,
-                mimetype: mimetype,
-                checksum: this.getFileMd5(file),
-                lastModified: new Date(stat.mtime)
-              })
-            }
-          } catch (err) {
-            console.log(`FAILED to scan file ${file}: `, err.message)
-            continue
-          }
-        }
-
-        this.mediaCache.add(media.id)
-
-        let dirpath = path.dirname(media.path)
-
-        // If we've already processed this path, just set the folder and continue
-        if (this.pathCache[dirpath]) {
-          media.setFolder(this.pathCache[dirpath])
-          continue
-        }
-
-        let parent = null
-        for (let dir of dirpath.split('/').filter(p => p !== '')) {
-          let parentId = parent !== null ? parent.id : null
-          parent = (await Folder.findOrCreate({
-            where: {
-              name: dir,
-              parentId: parentId
-            }
-          }))[0]
-
-          this.folderIds.add(parent.id)
-        }
-
-        this.pathCache[dirpath] = parent.id
-        media.setFolder(parent)
-      }
+      await this.iterateDirectory(dir)
     }
 
     await Folder.destroy({
@@ -135,6 +50,91 @@ class Scanner {
     })
 
     this.running = false
+  }
+
+  async scanFile (file) {
+    console.log(`SCANNING file ${file}`)
+
+    let stat = fs.statSync(file)
+    let media = await Media.findOne({
+      where: {
+        path: file
+      }
+    })
+
+    if (media && media.size === stat.size && media.lastModified.toString() === (new Date(stat.mtime).toString())) {
+      // If size and modtime are the same, it hasn't changed since the last scan
+    } else {
+      // Remove thumbnail if it exists and the photo was updated
+      if (media && fs.existsSync(media.getThumbnailPath())) {
+        fs.unlinkSync(media.getThumbnailPath())
+      }
+
+      let mimetype = await Media.getMIMEType(file)
+      let mediaInfo = {}
+
+      try {
+        if (mimetype.match(/image\/(?:png|jpg|jpeg|gif)/)) {
+          mediaInfo = await this.getImageInformation(file, mimetype)
+        } else if (mimetype.match(/video\//)) {
+          mediaInfo = await this.getVideoInformation(file)
+        } else {
+          console.log(`Invalid file type: ${mimetype}`)
+          return
+        }
+
+        if (media) {
+          media = await media.set({
+            ...mediaInfo,
+            path: file,
+            name: path.basename(file, path.extname(file)),
+            size: stat.size,
+            mimetype: mimetype,
+            checksum: this.getFileMd5(file),
+            lastModified: new Date(stat.mtime)
+          })
+        } else {
+          media = await Media.create({
+            ...mediaInfo,
+            path: file,
+            name: path.basename(file, path.extname(file)),
+            size: stat.size,
+            mimetype: mimetype,
+            checksum: this.getFileMd5(file),
+            lastModified: new Date(stat.mtime)
+          })
+        }
+      } catch (err) {
+        console.log(`FAILED to scan file ${file}: `, err.message)
+        return
+      }
+    }
+
+    this.mediaCache.add(media.id)
+
+    let dirpath = path.dirname(media.path)
+
+    // If we've already processed this path, just set the folder and continue
+    if (this.pathCache[dirpath]) {
+      media.setFolder(this.pathCache[dirpath])
+      return
+    }
+
+    let parent = null
+    for (let dir of dirpath.split('/').filter(p => p !== '')) {
+      let parentId = parent !== null ? parent.id : null
+      parent = (await Folder.findOrCreate({
+        where: {
+          name: dir,
+          parentId: parentId
+        }
+      }))[0]
+
+      this.folderIds.add(parent.id)
+    }
+
+    this.pathCache[dirpath] = parent.id
+    media.setFolder(parent)
   }
 
   async getVideoInformation (filepath) {
@@ -179,6 +179,30 @@ class Scanner {
     }
 
     return retval
+  }
+
+  async iterateDirectory (dirpath) {
+    let list = fs.readdirSync(dirpath)
+
+    let files = []
+    let folders = []
+    for (let item of list) {
+      item = `${dirpath}/${item}`
+      let stat = fs.statSync(item)
+      if (stat.isDirectory()) {
+        folders.push(item)
+      } else {
+        files.push(item)
+      }
+    }
+
+    for (let file of files) {
+      await this.scanFile(file)
+    }
+
+    for (let folder of folders) {
+      await this.iterateDirectory(folder)
+    }
   }
 
   walk (dir, results) {
