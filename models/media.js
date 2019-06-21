@@ -206,6 +206,7 @@ class Media extends Sequelize.Model {
 
     try {
       let data = parser.parse().tags
+      let stat = fs.statSync(path)
 
       return {
         iso: data.ISO,
@@ -218,7 +219,7 @@ class Media extends Sequelize.Model {
         latitude: data.GPSLatitude,
         longitude: data.GPSLongitude,
         altitude: data.GPSAltitudeRef,
-        takestamp: new Date(data.DateTimeOriginal * 1000)
+        takestamp: data.DateTimeOriginal ? new Date(data.DateTimeOriginal * 1000) : new Date(stat.mtime)
       }
     } catch (err) {
       return {}
