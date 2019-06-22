@@ -28,13 +28,15 @@ export default {
         this.$store.commit('users/logout')
       }
 
-      this.$store.dispatch('tags/getTags')
-      this.$store.dispatch('albums/fetchAlbums')
       this.$store.dispatch('config/fetchConfig')
 
-      if (this.$store.getters['users/isLoggedIn']) {
-        this.$store.dispatch('folders/fetchFolders')
-      }
+      this.fetchData()
+    },
+
+    fetchData () {
+      this.$store.dispatch('tags/getTags')
+      this.$store.dispatch('albums/fetchAlbums')
+      this.$store.dispatch('folders/fetchFolders')
     }
   },
 
@@ -44,6 +46,8 @@ export default {
         message: data,
         position: 'bottom-right'
       })
+
+      this.fetchData()
     }
   }
 }
