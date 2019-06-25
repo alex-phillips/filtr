@@ -1,5 +1,9 @@
 import Vue from 'vue'
 
+export function scan () {
+  Vue.prototype.$socket.emit('scan')
+}
+
 export function setMedia (state, media) {
   Vue.set(state, 'media', media)
 }

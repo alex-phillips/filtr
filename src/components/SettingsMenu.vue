@@ -71,7 +71,7 @@ export default {
 
   methods: {
     scanLibrary () {
-      this.$socket.emit('scan')
+      this.$store.dispatch('media/scan')
     },
 
     toggle () {
