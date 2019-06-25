@@ -49,7 +49,7 @@
         title="Finish"
         icon="done_all"
       >
-        You're ready to go! Be sure to run your first library scan to start seeing photos.
+        You're ready to go!
       </q-step>
 
       <template v-slot:navigation>
@@ -77,6 +77,7 @@ export default {
   methods: {
     async nextStep () {
       if (this.step === 3) {
+        this.$store.commit('media/scan')
         return this.submit()
       }
 
