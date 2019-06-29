@@ -9,7 +9,7 @@
             v-bind:key="album.id"
             :class="{ selected: album.selected }"
             @click="selectAlbum(index, $event)"
-            class="album-preview"
+            class="album-preview stacked"
             v-lazy:background="`${$config.server.base_url}/media/${album.previewId}/thumbnail`"
             spinner-color="primary"
           >
@@ -220,82 +220,82 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.grid-container {
-  position: relative;
-  padding-top: 50px;
-  width: 100%;
-  min-height: 300px;
+.grid-container
+  position relative
+  padding-top 50px
+  width 100%
+  min-height 300px
+  -webkit-user-select none
+  -moz-user-select none
+  -ms-user-select none
+  user-select none
 
-  -webkit-user-select: none; /* Safari 3.1+ */
-  -moz-user-select: none; /* Firefox 2+ */
-  -ms-user-select: none; /* IE 10+ */
-  user-select: none; /* Standard syntax */
-}
+.justified-layout-container
+  position relative
+  width 100%
 
-.justified-layout-container {
-  position: relative;
-  width: 100%;
-}
+.album-preview
+  border 1px solid black
+  width 280px
+  height 280px
+  background-size cover !important
+  background-position 50% 50% !important
 
-.album-preview {
-  border: 1px solid black;
-  width: 200px;
-  height: 200px;
-  background-size: cover !important;
-  background-position: 50% 50% !important;
-}
+.stacked
+  // Stacked paper effect
+  background: #fff;
+  box-shadow:
+    0 -1px 1px rgba(0,0,0,0.15), // The top layer shadow
+    0 -10px 0 -5px #eee, // The second layer
+    0 -10px 1px -4px rgba(0,0,0,0.15), // The second layer shadow
+    0 -20px 0 -10px #eee, // The third layer
+    0 -20px 1px -9px rgba(0,0,0,0.15); // The third layer shadow
 
-.image-preview {
-  position: absolute;
-  border: 1px solid black;
-  background-size: cover !important;
-  background-position: 50% 50% !important;
+  &:hover
+    box-shadow:
+      0 -1px 1px rgba(0,0,0,0.35), // The top layer shadow
+      0 -10px 0 -5px #ddd, // The second layer
+      0 -10px 1px -4px rgba(0,0,0,0.35), // The second layer shadow
+      0 -20px 0 -10px #ddd, // The third layer
+      0 -20px 1px -9px rgba(0,0,0,0.35); // The third layer shadow
 
-  .icon-overlay {
-    background: rgba(0, 0, 0, 0) !important;
-  }
+.image-preview
+  position absolute
+  border 1px solid black
+  background-size cover !important
+  background-position 50% 50% !important
 
-  .q-icon {
-    font-size: 3em;
-  }
-}
+  .icon-overlay
+    background rgba(0, 0, 0, 0) !important
 
-.selected {
-  border: $warning 5px solid
-}
+  .q-icon
+    font-size 3em
 
-.orientation-1 {}
+.selected
+  border $warning 5px solid
 
-.orientation-2 {
-  transform: rotateY(180deg)
-}
+.orientation-2
+  transform rotateY(180deg)
 
-.orientation-3 {
-  transform: rotate(180deg)
-}
+.orientation-3
+  transform rotate(180deg)
 
-.orientation-4 {
-  transform: rotate(180deg) rotateY(180deg)
-}
+.orientation-4
+  transform rotate(180deg) rotateY(180deg)
 
-.orientation-5 {
-  transform: rotate(270deg) rotateY(180deg);
-  transform-origin: top left;
+.orientation-5
+  transform rotate(270deg) rotateY(180deg)
+  transform-origin top left
 
-}
+.orientation-6
+  transform translateY(-100%) rotate(90deg)
+  transform-origin bottom left
 
-.orientation-6 {
-  transform: translateY(-100%) rotate(90deg);
-  transform-origin: bottom left;
-}
+.orientation-7
+  transform translateY(-100%) translateX(-100%) rotate(90deg) rotateY(180deg)
+  transform-origin bottom right
 
-.orientation-7 {
-  transform: translateY(-100%) translateX(-100%) rotate(90deg) rotateY(180deg);
-  transform-origin: bottom right;
-}
-
-.orientation-8 {
-  transform: translateX(-100%) rotate(270deg);
-  transform-origin: top right;
-}
+.orientation-8
+  transform translateX(-100%) rotate(270deg)
+  transform-origin top right
 </style>
