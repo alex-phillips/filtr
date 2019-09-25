@@ -123,8 +123,6 @@ export default {
       let media = this.$store.getters['media/getPrevious']
       index -= 1
 
-      console.log(media)
-
       if (media) {
         this.$store.commit('media/setIndex', index)
         this.$router.replace(media.url)

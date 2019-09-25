@@ -77,8 +77,8 @@ export default {
   methods: {
     async nextStep () {
       if (this.step === 3) {
+        await this.submit()
         this.$store.commit('media/scan')
-        return this.submit()
       }
 
       this.$refs.stepper.next()
