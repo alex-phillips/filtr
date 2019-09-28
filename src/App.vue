@@ -36,7 +36,8 @@ export default {
     fetchData () {
       this.$store.dispatch('tags/getTags')
       this.$store.dispatch('albums/fetchAlbums')
-      this.$store.dispatch('folders/fetchFolders')
+
+      if (this.$store.getters['users/isLoggedIn']) { this.$store.dispatch('folders/fetchFolders') }
     }
   },
 
