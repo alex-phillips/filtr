@@ -60,7 +60,10 @@ class Media extends Sequelize.Model {
       longitude: DataTypes.FLOAT,
       altitude: DataTypes.FLOAT,
       takestamp: DataTypes.DATE
-    }, { sequelize })
+    }, {
+      sequelize,
+      tableName: 'media'
+    })
   }
 
   static associate (models) {

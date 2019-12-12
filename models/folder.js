@@ -7,7 +7,10 @@ class Folder extends Sequelize.Model {
     return super.init({
       name: DataTypes.STRING,
       parentId: DataTypes.INTEGER
-    }, { sequelize })
+    }, {
+      sequelize,
+      tableName: 'folders'
+    })
   }
 
   static associate (models) {

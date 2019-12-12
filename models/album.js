@@ -10,7 +10,10 @@ class Album extends Sequelize.Model {
       public: DataTypes.BOOLEAN,
       parentId: DataTypes.INTEGER,
       previewId: DataTypes.INTEGER
-    }, { sequelize })
+    }, {
+      sequelize,
+      tableName: 'albums'
+    })
   }
 
   static associate (models) {

@@ -14,7 +14,10 @@ class User extends Sequelize.Model {
         }
       }
 
-    }, { sequelize })
+    }, {
+      sequelize,
+      tableName: 'users'
+    })
   }
 
   verifyPassword (check) {

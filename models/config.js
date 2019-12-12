@@ -7,7 +7,10 @@ class Config extends Sequelize.Model {
     return super.init({
       name: DataTypes.STRING,
       value: DataTypes.STRING
-    }, { sequelize })
+    }, {
+      sequelize,
+      tableName: 'configs'
+    })
   }
 }
 

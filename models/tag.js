@@ -6,7 +6,10 @@ class Tag extends Sequelize.Model {
   static init (sequelize, DataTypes) {
     return super.init({
       name: DataTypes.STRING
-    }, { sequelize })
+    }, {
+      sequelize,
+      tableName: 'tags'
+    })
   }
 
   static associate (models) {
