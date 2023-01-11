@@ -24,7 +24,7 @@
     "exif-parser": "^0.1.12",
     "express": "^4.17.0",
     "fluent-ffmpeg": "^2.1.2",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "justified-layout": "^2.1.2",
     "mmmagic": "^0.5.3",
     "nodemailer": "^6.2.1",
